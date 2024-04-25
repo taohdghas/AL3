@@ -61,6 +61,8 @@ void GameScene::Update() {
 	ImGui::End();
 	//デモウィンドウの表示を有効化
 	ImGui::ShowDemoWindow();
+	// デバックカメラの更新
+	debugCamera_->Update();
 }
 
 void GameScene::Draw() {
