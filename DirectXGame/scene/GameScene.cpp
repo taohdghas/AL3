@@ -63,6 +63,8 @@ void GameScene::Update() {
 	ImGui::ShowDemoWindow();
 	// デバックカメラの更新
 	debugCamera_->Update();
+	//
+	//
 }
 
 void GameScene::Draw() {
