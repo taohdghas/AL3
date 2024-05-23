@@ -10,6 +10,7 @@
 #include <vector>
 #include "DebugCamera.h"
 #include "mymath.h"
+#include "Skydome.h"
 
 /// <summary>
 /// ゲームシーン
@@ -53,6 +54,11 @@ private: // メンバ変数
 	bool isDebugCameraActive_ = false;
 	//デバックカメラ
 	DebugCamera* debugCamera_ = nullptr;
+	//天球
+	Skydome* skydome_ = nullptr;
+	//3Dモデル
+	Model* modelSkydome_ = nullptr;
+	uint32_t textureHandle_ = 0;
 	/// <summary>
 	/// ゲームシーン用
 	/// </summary>

@@ -14,6 +14,8 @@ GameScene::~GameScene() {
 	}
 	worldTransformBlocks_.clear();
 	delete debugCamera_;
+	delete skydome_;
+	delete modelSkydome_;
 }
 
 void GameScene::Initialize() {
@@ -23,6 +25,13 @@ void GameScene::Initialize() {
 	audio_ = Audio::GetInstance();
 	modelBlocks_ = Model::Create();
 	viewProjection_.Initialize();
+	textureHandle_ = TextureManager::Load("sample.png");
+	//  3Dモデルの生成
+	modelSkydome_ = Model::CreateFromOBJ("skydome", true);
+	// 天球の生成
+	skydome_ = new Skydome();
+	//天球の初期化
+	skydome_->Initialize(modelSkydome_, &viewProjection_);
 	//デバックカメラの生成
 	debugCamera_ = new DebugCamera(1280, 720);
 	//要素数
@@ -83,6 +92,8 @@ void GameScene::Update() {
 	//ビュープロジェクション行列の更新と転送
 		viewProjection_.UpdateMatrix();
 	}
+	//天球の更新
+	skydome_->Update();
 }
 
 void GameScene::Draw() {
@@ -119,6 +130,8 @@ void GameScene::Draw() {
 			modelBlocks_->Draw(*worldTransformBlock, viewProjection_);
 		}
 	}
+	//天球の描画
+	skydome_->Draw();
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();
 #pragma endregion
