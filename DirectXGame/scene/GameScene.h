@@ -11,6 +11,7 @@
 #include "DebugCamera.h"
 #include "mymath.h"
 #include "Skydome.h"
+#include "Player.h"
 
 /// <summary>
 /// ゲームシーン
@@ -58,7 +59,10 @@ private: // メンバ変数
 	Skydome* skydome_ = nullptr;
 	//3Dモデル
 	Model* modelSkydome_ = nullptr;
-	uint32_t textureHandle_ = 0;
+	//自キャラ
+	Player* player_ = nullptr;
+	Model* modelPlayer_ = nullptr;
+	//
 	/// <summary>
 	/// ゲームシーン用
 	/// </summary>

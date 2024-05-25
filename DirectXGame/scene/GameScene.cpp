@@ -14,8 +14,8 @@ GameScene::~GameScene() {
 	}
 	worldTransformBlocks_.clear();
 	delete debugCamera_;
-	delete skydome_;
 	delete modelSkydome_;
+	delete player_;
 }
 
 void GameScene::Initialize() {
@@ -25,7 +25,12 @@ void GameScene::Initialize() {
 	audio_ = Audio::GetInstance();
 	modelBlocks_ = Model::Create();
 	viewProjection_.Initialize();
-	textureHandle_ = TextureManager::Load("sample.png");
+	//自キャラの生成
+	player_ = new Player();
+	//自キャラの生成(モデル)
+	modelPlayer_ = Model::CreateFromOBJ("player", true);
+	//自キャラの初期化
+	player_->Initialize(modelPlayer_,&viewProjection_);
 	//  3Dモデルの生成
 	modelSkydome_ = Model::CreateFromOBJ("skydome", true);
 	// 天球の生成
@@ -94,6 +99,8 @@ void GameScene::Update() {
 	}
 	//天球の更新
 	skydome_->Update();
+	//自キャラの更新
+	player_->Update();
 }
 
 void GameScene::Draw() {
@@ -132,6 +139,8 @@ void GameScene::Draw() {
 	}
 	//天球の描画
 	skydome_->Draw();
+	//自キャラの描画
+	player_->Draw();
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();
 #pragma endregion
