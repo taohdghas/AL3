@@ -1,7 +1,8 @@
 #pragma once
-#include "mymath.h"
-#include <iostream>
+#include "Vector3.h"
+#include <stdint.h>
 #include <vector>
+#include <string>
 /// <summary>
 /// マップチップフィールド
 /// </summary>
