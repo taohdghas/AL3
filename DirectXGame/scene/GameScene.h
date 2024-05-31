@@ -12,7 +12,7 @@
 #include "mymath.h"
 #include "Skydome.h"
 #include "Player.h"
-
+#include "MapChipField.h"
 /// <summary>
 /// ゲームシーン
 /// </summary>
@@ -43,6 +43,7 @@ public: // メンバ関数
 	/// 描画
 	/// </summary>
 	void Draw();
+	void GenerateBlocks();
 
 private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
@@ -51,18 +52,18 @@ private: // メンバ変数
 	Model* modelBlocks_ = nullptr;
 	std::vector<std::vector<WorldTransform*>> worldTransformBlocks_;
 	ViewProjection viewProjection_;
-	//デバックカメラ有効
+	// デバックカメラ有効
 	bool isDebugCameraActive_ = false;
-	//デバックカメラ
+	// デバックカメラ
 	DebugCamera* debugCamera_ = nullptr;
-	//天球
+	// 天球
 	Skydome* skydome_ = nullptr;
-	//3Dモデル
+	// 3Dモデル
 	Model* modelSkydome_ = nullptr;
-	//自キャラ
+	// 自キャラ
 	Player* player_ = nullptr;
 	Model* modelPlayer_ = nullptr;
-	//
+	MapChipField* mapChipField_;
 	/// <summary>
 	/// ゲームシーン用
 	/// </summary>

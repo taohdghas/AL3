@@ -1,6 +1,5 @@
 #include "GameScene.h"
 #pragma once
-
 // 平行移動行列
 Matrix4x4 MakeTranslateMatrix(const Vector3& translate);
 // 拡大縮小行列
