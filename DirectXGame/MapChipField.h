@@ -15,8 +15,6 @@ struct MapChipData {
 
 class MapChipField {
 public:
-	MapChipField() {}
-	~MapChipField() {}
 	void ResetMapChipData();
 	void LoadMapChipCsv(const std::string& filePath);
 	MapChipType GetMapChipTypeByIndex(uint32_t xIndex, uint32_t yIndex);
@@ -33,5 +31,4 @@ private:
 	static inline const uint32_t kNumBlockHorizontal = 100;
 
 	MapChipData mapChipData_;
-	MapChipField* mapChipField_;
 };
