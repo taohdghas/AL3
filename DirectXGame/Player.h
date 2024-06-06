@@ -44,7 +44,6 @@ private:
 	static inline const float kLimitFallSpeed = 1.0f;
 	//ジャンプ初速(上方向)
 	static inline const float kJumpAcceleration = 1.0f;
-	static inline const float kAttenuationLanding = 0.5f;
 	//旋回開始時の角度
 	float turnFirstRotationY_ = 0.0f;
 	//旋回タイマー
