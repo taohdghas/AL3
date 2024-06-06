@@ -18,6 +18,7 @@ GameScene::~GameScene() {
 	delete player_;
 	delete skydome_;
 	delete mapChipField_;
+	delete cameraController_;
 }
 
 void GameScene::Initialize() {
@@ -47,6 +48,11 @@ void GameScene::Initialize() {
 	//デバックカメラの生成
 	debugCamera_ = new DebugCamera(1280, 720);
 	GenerateBlocks();
+	//カメラコントローラの初期化
+	cameraController_ = new CameraController();
+	cameraController_->Initialize(&viewProjection_);
+	cameraController_->SetTarget();
+	cameraController_->Reset();
 }
 
 void GameScene::Update() {
@@ -86,6 +92,8 @@ void GameScene::Update() {
 	skydome_->Update();
 	//自キャラの更新
 	player_->Update();
+	//カメラコントローラの更新
+	cameraController_->Update();
 }
 
 void GameScene::Draw() {
