@@ -1,5 +1,35 @@
 #include "mymath.h"
 
+//線形補間
+double easeInOutSine(double x) { return -(std::cos(M_PI * x) - 1) / 2; }
+
+// 加算
+Vector3 Add(const Vector3& v1, const Vector3& v2) { return Vector3(v1.x + v2.x, v1.y + v2.y, v1.z + v2.z); }
+// 減算
+Vector3 Subtract(const Vector3& v1, const Vector3& v2) { return {v1.x - v2.x, v1.y - v2.y, v1.z - v2.z}; }
+
+// スカラー倍
+Vector3 Multiply(float scalar, const Vector3& v) { return {scalar * v.x, scalar * v.y, scalar * v.z}; }
+
+// 内積
+float Dot(const Vector3& v1, const Vector3& v2) { return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z; }
+
+// 長さの2乗
+float LengthSquared(const Vector3& v) { return v.x * v.x + v.y * v.y + v.z * v.z; }
+
+// 長さ
+float Length(const Vector3& v) { return static_cast<float>(sqrt(LengthSquared(v))); }
+
+// 正規化
+Vector3 Normalize(const Vector3& v) {
+	float len = Length(v);
+	if (len != 0)
+		return {v.x / len, v.y / len, v.z / len};
+	else
+		return {0.0f, 0.0f, 0.0f};
+}
+
+
 Matrix4x4 Multiply(const Matrix4x4& m1, const Matrix4x4& m2) {
 	Matrix4x4 result{};
 	for (int row = 0; row < 4; ++row) {

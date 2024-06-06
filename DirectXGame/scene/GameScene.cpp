@@ -31,8 +31,10 @@ void GameScene::Initialize() {
 	player_ = new Player();
 	//自キャラの生成(モデル)
 	modelPlayer_ = Model::CreateFromOBJ("player", true);
+	//座標をマップチップ番号で指定
+	Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(1,18);
 	//自キャラの初期化
-	player_->Initialize(modelPlayer_,&viewProjection_);
+	player_->Initialize(modelPlayer_,&viewProjection_,playerPosition);
 	//  3Dモデルの生成
 	modelSkydome_ = Model::CreateFromOBJ("skydome", true);
 	// 天球の生成
