@@ -31,7 +31,8 @@ public:
 	/// 描画
 	/// </summary>
 	void Draw();
-
+	const WorldTransform& GetWorldTransform() { return worldTransform_; };
+	const Vector3& Getvelocity() const { return velocity_; }
 private:
 	static inline const float kAcceleration = 0.1f;
 	static inline const float kAttenuation = 0.5f;

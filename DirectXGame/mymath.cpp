@@ -1,5 +1,21 @@
 #include "mymath.h"
 
+//代入演算子オーバーロード
+//Vector3の掛け算
+Vector3& operator*=(Vector3& v, float s) {
+	v.x *= s;
+	v.y *= s;
+	v.z *= s;
+	return v;
+}
+
+//2項演算子オーバーロード
+//Vector3の掛け算
+const Vector3 operator*(const Vector3& v, float s) { 
+	Vector3 temp(v); 
+	return temp *= s;
+}
+
 //線形補間
 double easeInOutSine(double x) { return -(std::cos(M_PI * x) - 1) / 2; }
 

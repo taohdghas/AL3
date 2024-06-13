@@ -17,15 +17,22 @@ public:
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Initialize(ViewProjection*viewProjection);
-
+	void Initialize(ViewProjection*viewProjection,Rect movableArea_);
 	/// <summary>
 	/// 更新
 	/// </summary>
 	void Update();
 	void SetTarget(Player* target) { target_ = target; }
 	void Reset();
-	void SetMovableArea() private:
+	void SetMovableArea(Rect area) { movableArea_ = area; }
+
+private:
+	// 座標補間割合
+	static inline const float kInterpolationRate = 0.8f;
+	//速度掛け率
+	static inline const float kVelocityBias = 2.0f;
+	//追従対象の各方向へのカメラ移動範囲
+	static inline const Rect margin = {-5.0f, 5.0f, -5.0f, 5.0f};
 	//ビュープロジェクション
 	ViewProjection* viewProjection_;
 	Player* target_ = nullptr;
@@ -33,5 +40,7 @@ public:
 	Vector3 targetOffset_ = {0, 0, -15.0f};
 	//カメラ移動範囲
 	Rect movableArea_ = {0, 100, 0, 100};
+	//カメラの目標座標
+	Vector3 targetpos_ = {};
 };
 

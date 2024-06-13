@@ -2,6 +2,7 @@
 #include "TextureManager.h"
 #include <cassert>
 #include "WorldTransform.h"
+#include "CameraController.h"
 
 GameScene::GameScene() {}
 
@@ -50,8 +51,8 @@ void GameScene::Initialize() {
 	GenerateBlocks();
 	//カメラコントローラの初期化
 	cameraController_ = new CameraController();
-	cameraController_->Initialize(&viewProjection_);
-	cameraController_->SetTarget();
+	cameraController_->Initialize(&viewProjection_,movableArea);
+	cameraController_->SetTarget(player_);
 	cameraController_->Reset();
 }
 

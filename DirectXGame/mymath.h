@@ -6,6 +6,14 @@
 #define M_PI 3.14159265358979323846
 #endif
 
+//代入演算子オーバーロード
+//Vector3の掛け算
+Vector3& operator*=(Vector3& v, float s);
+
+//2項演算子オーバーロード
+//Vector3の掛け算
+const Vector3 operator*(const Vector3& v, float s);
+
 //線形補間
 double easeInOutSine(double x);
 // 加算

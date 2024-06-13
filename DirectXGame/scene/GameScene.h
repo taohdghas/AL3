@@ -67,6 +67,7 @@ private: // メンバ変数
 	MapChipField* mapChipField_;
 	//カメラコントローラ
 	CameraController* cameraController_ = nullptr;
+	Rect movableArea = {0, 100, 0, 100};
 	/// <summary>
 	/// ゲームシーン用
 	/// </summary>
