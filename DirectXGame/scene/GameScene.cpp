@@ -29,6 +29,9 @@ void GameScene::Initialize() {
 	audio_ = Audio::GetInstance();
 	modelBlocks_ = Model::Create();
 	viewProjection_.Initialize();
+	// マップチップフィールドの生成
+	mapChipField_ = new MapChipField;
+	mapChipField_->LoadMapChipCsv("Resources/map.csv");
 	//自キャラの生成
 	player_ = new Player();
 	//自キャラの生成(モデル)
@@ -37,15 +40,13 @@ void GameScene::Initialize() {
 	Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(1,18);
 	//自キャラの初期化
 	player_->Initialize(modelPlayer_,&viewProjection_,playerPosition);
+	player_->SetMapChipField(mapChipField_);
 	//  3Dモデルの生成
 	modelSkydome_ = Model::CreateFromOBJ("skydome", true);
 	// 天球の生成
 	skydome_ = new Skydome();
 	//天球の初期化
 	skydome_->Initialize(modelSkydome_, &viewProjection_);
-	//マップチップフィールドの生成
-	mapChipField_ = new MapChipField;
-	mapChipField_->LoadMapChipCsv("Resources/map.csv");
 	//デバックカメラの生成
 	debugCamera_ = new DebugCamera(1280, 720);
 	GenerateBlocks();
