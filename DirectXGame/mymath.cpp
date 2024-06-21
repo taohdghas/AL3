@@ -17,6 +17,23 @@ Vector3 operator+=(const Vector3& v1, const Vector3& v2) {
 	return result;
 }
 
+//Vector3の引き算
+Vector3 operator-(const Vector3& v1, const Vector3& v2) { 
+	Vector3 result{}; 
+	result.x = v1.x + v2.x;
+	result.y = v1.y + v2.y;
+	result.z = v1.z + v2.z;
+	return result;
+}
+
+Vector3 operator-=(const Vector3& v1, const Vector3& v2) {
+	Vector3 result{};
+	result.x = v1.x + v2.x;
+	result.y = v1.y + v2.y;
+	result.z = v1.z + v2.z;
+	return result;
+}
+
 //代入演算子オーバーロード
 //Vector3の掛け算
 Vector3& operator*=(Vector3& v, float s) {

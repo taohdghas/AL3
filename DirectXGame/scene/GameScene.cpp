@@ -16,6 +16,7 @@ GameScene::~GameScene() {
 	worldTransformBlocks_.clear();
 	delete debugCamera_;
 	delete modelSkydome_;
+	delete modelBlocks_;
 	delete player_;
 	delete skydome_;
 	delete mapChipField_;
@@ -27,7 +28,7 @@ void GameScene::Initialize() {
 	dxCommon_ = DirectXCommon::GetInstance();
 	input_ = Input::GetInstance();
 	audio_ = Audio::GetInstance();
-	modelBlocks_ = Model::Create();
+	modelBlocks_ = Model::CreateFromOBJ("block",true);
 	viewProjection_.Initialize();
 	// マップチップフィールドの生成
 	mapChipField_ = new MapChipField;
@@ -55,6 +56,10 @@ void GameScene::Initialize() {
 	cameraController_->Initialize(&viewProjection_,movableArea);
 	cameraController_->SetTarget(player_);
 	cameraController_->Reset();
+	/*
+	CameraController::Rect cameraArea = {12.0f, 100 - 12.0f, 6.0f, 6.0f};
+	cameraController_->SetMovableArea(cameraArea);
+	*/
 }
 
 void GameScene::Update() {

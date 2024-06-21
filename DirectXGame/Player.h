@@ -31,9 +31,9 @@ struct CollisionMapInfo {
 	//天井衝突フラグ
 	bool ceilCollision = false;
 	//着地フラグ
-	bool onLanding = false;
+	bool onGround = false;
 	//壁接触フラグ
-	bool wallContact = false;
+	bool wallhit = false;
 	//移動量
 	Vector3 moveAmount;
 };
@@ -65,18 +65,25 @@ public:
 	void MapCollision(CollisionMapInfo& info);
 	void MapTopCollision(CollisionMapInfo& info);
 	void MapBottomCollision(CollisionMapInfo& info);
-	void MapLightCollision(CollisionMapInfo& info);
+	void MapRightCollision(CollisionMapInfo& info);
 	void MapLeftCollision(CollisionMapInfo& info);
 	//判定結果を反映して移動させる
 	void ResultMove(const CollisionMapInfo& info);
 	//天井に接触している場合の処理
-	void CeilingContact(const CollisionMapInfo& info);
+	void CeilingHit(const CollisionMapInfo& info);
+	//接地状態の切り替え処理
+	void OnGround(const CollisionMapInfo& info);
+	//壁に接触してる場合の処理
+	void WallHit(const CollisionMapInfo& info);
+	//旋回制御関数
+	void TurnPlayer();
+
 	Vector3 CornerPosition(const Vector3& center, Corner corner);
 
 private:
 	static inline const float kAcceleration = 0.1f;
 	static inline const float kAttenuation = 0.5f;
-	static inline const float kLimitRunSpeed = 1.0f;
+	static inline const float kLimitRunSpeed = 0.8f;
 	//旋回時間<秒>
 	static inline const float kTimeTurn = 0.3f;
 	//重力加速度(下方向)
@@ -85,13 +92,17 @@ private:
 	static inline const float kLimitFallSpeed = 1.0f;
 	//ジャンプ初速(上方向)
 	static inline const float kJumpAcceleration = 1.0f;
-	static inline const float kAttenuationLanding = 0.5f;
+	static inline const float kAttenuationLanding = 0.1f;
 
-	static inline const float kBlank = 1.0f;
+	//微小な数値
+	static inline const float kBlank = 0.3f;
+
+	//着地時の速度減衰率
+	static inline const float kAttenuationWall = 0.1f;
 
 	//キャラクターの当たり判定サイズ
-	static inline const float kWidth = 1.0f;
-	static inline const float kHeight = 1.0f;
+	static inline const float kWidth = 0.8f;
+	static inline const float kHeight = 0.8f;
 	
 	//旋回開始時の角度
 	float turnFirstRotationY_ = 0.0f;
@@ -99,6 +110,9 @@ private:
 	float turnTimer_ = 0.0f;
 	//接地状態フラグ
 	bool onGround_ = true;
+
+	//着地フラグ
+	bool landing = false;
 	// ワールド変換データ
 	WorldTransform worldTransform_;
 	// モデル
