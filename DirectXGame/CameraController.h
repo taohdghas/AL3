@@ -4,7 +4,7 @@
 /// カメラコントローラ
 /// </summary>
 
-//前方宣言
+// 前方宣言
 class Player;
 class CameraController {
 public:
@@ -17,7 +17,7 @@ public:
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Initialize(ViewProjection*viewProjection,Rect movableArea_);
+	void Initialize(ViewProjection* viewProjection, Rect movableArea_);
 	/// <summary>
 	/// 更新
 	/// </summary>
@@ -29,18 +29,17 @@ public:
 private:
 	// 座標補間割合
 	static inline const float kInterpolationRate = 0.8f;
-	//速度掛け率
+	// 速度掛け率
 	static inline const float kVelocityBias = 1.0f;
-	//追従対象の各方向へのカメラ移動範囲
+	// 追従対象の各方向へのカメラ移動範囲
 	static inline const Rect margin = {-5.0f, 5.0f, -5.0f, 5.0f};
-	//ビュープロジェクション
+	// ビュープロジェクション
 	ViewProjection* viewProjection_;
 	Player* target_ = nullptr;
-	//追従対象とカメラの座標の差(オフセット)
+	// 追従対象とカメラの座標の差(オフセット)
 	Vector3 targetOffset_ = {0, 0, -15.0f};
-	//カメラ移動範囲
+	// カメラ移動範囲
 	Rect movableArea_ = {0, 100, 0, 100};
-	//カメラの目標座標
+	// カメラの目標座標
 	Vector3 targetpos_ = {};
 };
-

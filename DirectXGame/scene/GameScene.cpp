@@ -1,22 +1,22 @@
 #include "GameScene.h"
-#include "TextureManager.h"
-#include <cassert>
-#include "WorldTransform.h"
 #include "CameraController.h"
+#include "TextureManager.h"
+#include "WorldTransform.h"
+#include <cassert>
 
 GameScene::GameScene() {}
 
-GameScene::~GameScene() { 
-	delete modelBlocks_; 
-	for (std::vector<WorldTransform*>&worldTransformBlockLine : worldTransformBlocks_) {
+GameScene::~GameScene() {
+	delete modelBlocks_;
+	for (std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformBlocks_) {
 		for (WorldTransform* worldTransformBlock : worldTransformBlockLine) {
 			delete worldTransformBlock;
 		}
 	}
 	worldTransformBlocks_.clear();
 	delete debugCamera_;
-	delete modelSkydome_;
 	delete modelBlocks_;
+	delete modelSkydome_;
 	delete player_;
 	delete skydome_;
 	delete mapChipField_;
@@ -28,32 +28,32 @@ void GameScene::Initialize() {
 	dxCommon_ = DirectXCommon::GetInstance();
 	input_ = Input::GetInstance();
 	audio_ = Audio::GetInstance();
-	modelBlocks_ = Model::CreateFromOBJ("block",true);
+	modelBlocks_ = Model::CreateFromOBJ("block", true);
 	viewProjection_.Initialize();
 	// マップチップフィールドの生成
 	mapChipField_ = new MapChipField;
 	mapChipField_->LoadMapChipCsv("Resources/map.csv");
-	//自キャラの生成
+	// 自キャラの生成
 	player_ = new Player();
-	//自キャラの生成(モデル)
+	// 自キャラの生成(モデル)
 	modelPlayer_ = Model::CreateFromOBJ("player", true);
-	//座標をマップチップ番号で指定
-	Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(1,18);
-	//自キャラの初期化
-	player_->Initialize(modelPlayer_,&viewProjection_,playerPosition);
+	// 座標をマップチップ番号で指定
+	Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(3, 18);
+	// 自キャラの初期化
+	player_->Initialize(modelPlayer_, &viewProjection_, playerPosition);
 	player_->SetMapChipField(mapChipField_);
 	//  3Dモデルの生成
 	modelSkydome_ = Model::CreateFromOBJ("skydome", true);
 	// 天球の生成
 	skydome_ = new Skydome();
-	//天球の初期化
+	// 天球の初期化
 	skydome_->Initialize(modelSkydome_, &viewProjection_);
-	//デバックカメラの生成
+	// デバックカメラの生成
 	debugCamera_ = new DebugCamera(1280, 720);
 	GenerateBlocks();
-	//カメラコントローラの初期化
+	// カメラコントローラの初期化
 	cameraController_ = new CameraController();
-	cameraController_->Initialize(&viewProjection_,movableArea);
+	cameraController_->Initialize(&viewProjection_, movableArea);
 	cameraController_->SetTarget(player_);
 	cameraController_->Reset();
 	/*
@@ -63,18 +63,18 @@ void GameScene::Initialize() {
 }
 
 void GameScene::Update() {
-//ブロックの更新
+	// ブロックの更新
 	for (std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformBlocks_) {
 		for (WorldTransform* worldTransformBlock : worldTransformBlockLine) {
-			if (!worldTransformBlock) 
+			if (!worldTransformBlock)
 				continue;
 			// アフィン変換行列の作成
 			worldTransformBlock->UpdateMatrix();
 		}
 	}
-	//デバックカメラの更新
+	// デバックカメラの更新
 	debugCamera_->Update();
-	#ifdef _DEBUG
+#ifdef _DEBUG
 	if (input_->TriggerKey(DIK_SPACE)) {
 		if (isDebugCameraActive_ == false) {
 			isDebugCameraActive_ = true;
@@ -82,24 +82,24 @@ void GameScene::Update() {
 			isDebugCameraActive_ = false;
 		}
 	}
-	#endif
-	//カメラの処理
-	
+#endif
+	// カメラの処理
+
 	if (isDebugCameraActive_) {
 		debugCamera_->Update();
 		viewProjection_.matView = debugCamera_->GetViewProjection().matView;
 		viewProjection_.matProjection = debugCamera_->GetViewProjection().matProjection;
-		//ビュープロジェクション行列の転送
+		// ビュープロジェクション行列の転送
 		viewProjection_.TransferMatrix();
 	} else {
-	//ビュープロジェクション行列の更新と転送
+		// ビュープロジェクション行列の更新と転送
 		viewProjection_.UpdateMatrix();
 	}
-	//天球の更新
+	// 天球の更新
 	skydome_->Update();
-	//自キャラの更新
+	// 自キャラの更新
 	player_->Update();
-	//カメラコントローラの更新
+	// カメラコントローラの更新
 	cameraController_->Update();
 }
 
@@ -115,7 +115,7 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに背景スプライトの描画処理を追加できる
 	/// </summary>
- 
+
 	// スプライト描画後処理
 	Sprite::PostDraw();
 	// 深度バッファクリア
@@ -132,14 +132,14 @@ void GameScene::Draw() {
 	// ブロックの描画
 	for (std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformBlocks_) {
 		for (WorldTransform* worldTransformBlock : worldTransformBlockLine) {
-			if (!worldTransformBlock) 
+			if (!worldTransformBlock)
 				continue;
 			modelBlocks_->Draw(*worldTransformBlock, viewProjection_);
 		}
 	}
-	//天球の描画
+	// 天球の描画
 	skydome_->Draw();
-	//自キャラの描画
+	// 自キャラの描画
 	player_->Draw();
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();
