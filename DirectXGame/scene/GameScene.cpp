@@ -16,8 +16,10 @@ GameScene::~GameScene() {
 	worldTransformBlocks_.clear();
 	delete debugCamera_;
 	delete modelBlocks_;
+	delete modelEnemy_;
 	delete modelSkydome_;
 	delete player_;
+	delete enemy_;
 	delete skydome_;
 	delete mapChipField_;
 	delete cameraController_;
@@ -42,6 +44,13 @@ void GameScene::Initialize() {
 	// 自キャラの初期化
 	player_->Initialize(modelPlayer_, &viewProjection_, playerPosition);
 	player_->SetMapChipField(mapChipField_);
+	//敵の生成
+	enemy_ = new Enemy();
+	modelEnemy_ = Model::CreateFromOBJ("enemy", true);
+	//敵の座標
+	Vector3 enemyPosition = mapChipField_->GetMapChipPositionByIndex(16, 18);
+	//敵の初期化
+	enemy_->Initialize(modelEnemy_, &viewProjection_, enemyPosition);
 	//  3Dモデルの生成
 	modelSkydome_ = Model::CreateFromOBJ("skydome", true);
 	// 天球の生成
@@ -99,6 +108,8 @@ void GameScene::Update() {
 	skydome_->Update();
 	// 自キャラの更新
 	player_->Update();
+	//敵の更新
+	enemy_->Update();
 	// カメラコントローラの更新
 	cameraController_->Update();
 }
@@ -141,6 +152,8 @@ void GameScene::Draw() {
 	skydome_->Draw();
 	// 自キャラの描画
 	player_->Draw();
+	//敵の描画
+	enemy_->Draw();
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();
 #pragma endregion
