@@ -4,6 +4,7 @@
 #include "Model.h"
 #include "ViewProjection.h"
 #include "WorldTransform.h"
+#include "aabb.h"
 #include <algorithm>
 #include <cassert>
 #include <numbers>
@@ -11,7 +12,7 @@
 /// 自キャラ
 /// </summary>
 class MapChipField;
-
+class Enemy;
 // 左右
 enum class LRDirection {
 	kRight,
@@ -78,7 +79,16 @@ public:
 	// 旋回制御関数
 	void TurnPlayer();
 
+	//衝突応答
+	void OnCollision(const Enemy* enemy);
+
 	Vector3 CornerPosition(const Vector3& center, Corner corner);
+
+	//ワールド座標を取得
+	Vector3 GetWorldPosition();
+
+	//AABBを取得
+	AABB GetAABB();
 
 private:
 	static inline const float kAcceleration = 0.1f;
@@ -112,7 +122,6 @@ private:
 	float turnTimer_ = 0.0f;
 	// 接地状態フラグ
 	bool onGround_ = true;
-
 	// 着地フラグ
 	bool landing = false;
 	// ワールド変換データ
@@ -125,4 +134,7 @@ private:
 	LRDirection lrDirection_ = LRDirection::kRight;
 	// マップチップによるフィールド
 	MapChipField* mapchipField_ = nullptr;
+
+	//AABBを取得
+	
 };

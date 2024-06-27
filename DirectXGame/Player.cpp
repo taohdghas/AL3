@@ -139,14 +139,11 @@ void Player::move() {
 	}
 }
 
-Vector3 Player::CornerPosition(const Vector3& center, Corner corner) {
-	Vector3 offsetTable[kNumCorner] = {
-	    {kWidth / 2.0f,  -kHeight / 2.0f, 0}, //  kRightBottom
-	    {-kWidth / 2.0f, -kHeight / 2.0f, 0}, //  kLeftBottom
-	    {kWidth / 2.0f,  kHeight / 2.0f,  0}, //  kRightTop
-	    {-kWidth / 2.0f, kHeight / 2.0f,  0}  //  kLeftTop
-	};
-	return center + offsetTable[static_cast<uint32_t>(corner)];
+void Player::MapCollision(CollisionMapInfo& info) {
+	MapTopCollision(info);
+	MapBottomCollision(info);
+	MapRightCollision(info);
+	MapLeftCollision(info);
 }
 
 // マップ衝突判定上
@@ -316,13 +313,6 @@ void Player::MapLeftCollision(CollisionMapInfo& info) {
 	}
 }
 
-
-void Player::MapCollision(CollisionMapInfo& info) {
-	MapTopCollision(info);
-	MapBottomCollision(info);
-	MapRightCollision(info);
-	MapLeftCollision(info);
-}
 // 判定結果を反映して移動させる
 void Player::ResultMove(const CollisionMapInfo& info) {
 	// 移動
@@ -389,4 +379,44 @@ void Player::OnGround(const CollisionMapInfo& info) {
 			onGround_ = true;
 		}
 	}
+}
+
+//衝突応答
+void Player::OnCollision(const Enemy* enemy) {
+	(void)enemy;
+	//ジャンプ歌詞(仮処理)
+	velocity_.y += 1.0f;
+}
+
+Vector3 Player::CornerPosition(const Vector3& center, Corner corner) {
+	Vector3 offsetTable[kNumCorner] = {
+	    {kWidth / 2.0f,  -kHeight / 2.0f, 0}, //  kRightBottom
+	    {-kWidth / 2.0f, -kHeight / 2.0f, 0}, //  kLeftBottom
+	    {kWidth / 2.0f,  kHeight / 2.0f,  0}, //  kRightTop
+	    {-kWidth / 2.0f, kHeight / 2.0f,  0}  //  kLeftTop
+	};
+	return center + offsetTable[static_cast<uint32_t>(corner)];
+}
+
+//ワールド座標を取得
+Vector3 Player::GetWorldPosition() {
+	//ワールド座標を入れる変数
+	Vector3 worldPos;
+	//ワールド行列の平行移動成分を取得(ワールド座標)
+	worldPos.x = worldTransform_.translation_.x;
+	worldPos.y = worldTransform_.translation_.y;
+	worldPos.z = worldTransform_.translation_.z;
+	
+	return worldPos;
+}
+
+//AABB取得関数
+AABB Player::GetAABB() { 
+	Vector3 worldPos = GetWorldPosition();
+	AABB aabb;
+
+	aabb.min = {worldPos.x - kWidth / 2.0f, worldPos.y - kHeight / 2.0f, worldPos.z - kWidth / 2.0f};
+	aabb.max = {worldPos.x + kWidth / 2.0f, worldPos.y + kHeight / 2.0f, worldPos.z + kWidth / 2.0f};
+
+	return aabb;
 }
