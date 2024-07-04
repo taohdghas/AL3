@@ -1,6 +1,6 @@
 #include "mymath.h"
 
-//Vector3の足し算
+// Vector3の足し算
 Vector3 operator+(const Vector3& v1, const Vector3& v2) {
 	Vector3 result{};
 	result.x = v1.x + v2.x;
@@ -9,33 +9,38 @@ Vector3 operator+(const Vector3& v1, const Vector3& v2) {
 	return result;
 }
 
-Vector3 operator+=(const Vector3& v1, const Vector3& v2) {
+Vector3& operator+=(Vector3& v1, const Vector3& v2) {
+	v1.x += v2.x;
+	v1.y += v2.x;
+	v1.z += v2.x;
+	return v1;
+}
+
+// Vector3の引き算
+Vector3 operator-(const Vector3& v1, const Vector3& v2) {
 	Vector3 result{};
-	result.x = v1.x + v2.x;
-	result.y = v1.y + v2.y;
-	result.z = v1.z + v2.z;
+	result.x = v1.x - v2.x;
+	result.y = v1.y - v2.y;
+	result.z = v1.z - v2.z;
 	return result;
 }
 
-//Vector3の引き算
-Vector3 operator-(const Vector3& v1, const Vector3& v2) { 
-	Vector3 result{}; 
-	result.x = v1.x + v2.x;
-	result.y = v1.y + v2.y;
-	result.z = v1.z + v2.z;
-	return result;
+Vector3 operator-=(Vector3& v1, const Vector3& v2) {
+	v1.x -= v2.x;
+	v1.y -= v2.x;
+	v1.z -= v2.x;
+	return v1;
 }
 
-Vector3 operator-=(const Vector3& v1, const Vector3& v2) {
+// Vector3の掛け算(スカラー)
+Vector3 operator*(const Vector3& v, float s) {
 	Vector3 result{};
-	result.x = v1.x + v2.x;
-	result.y = v1.y + v2.y;
-	result.z = v1.z + v2.z;
+	result.x = v.x * s;
+	result.y = v.y * s;
+	result.z = v.z * s;
 	return result;
 }
 
-//代入演算子オーバーロード
-//Vector3の掛け算
 Vector3& operator*=(Vector3& v, float s) {
 	v.x *= s;
 	v.y *= s;
@@ -43,14 +48,24 @@ Vector3& operator*=(Vector3& v, float s) {
 	return v;
 }
 
-//2項演算子オーバーロード
-//Vector3の掛け算
-const Vector3 operator*(const Vector3& v, float s) { 
-	Vector3 temp(v); 
-	return temp *= s;
+//Vector3同士の掛け算
+Vector3 operator*(const Vector3& v1, const Vector3& v2)
+{ 
+	Vector3 result{};
+	result.x = v1.x * v2.x;
+	result.y = v1.y * v2.y;
+	result.z = v1.z * v2.z;
+	return result;
+}
+Vector3& operator*=(Vector3& v1, const Vector3& v2) {
+	v1.x *= v2.x; 
+	v1.y *= v2.y;
+	v1.z *= v2.z;
+	return v1;
 }
 
-//線形補間
+
+// 線形補間
 double easeInOutSine(double x) { return -(std::cos(M_PI * x) - 1) / 2; }
 
 // 加算
@@ -70,6 +85,19 @@ float LengthSquared(const Vector3& v) { return v.x * v.x + v.y * v.y + v.z * v.z
 // 長さ
 float Length(const Vector3& v) { return static_cast<float>(sqrt(LengthSquared(v))); }
 
+Vector3 Transform(const Vector3& vector, const Matrix4x4& matrix) {
+	Vector3 result;
+	result.x = vector.x * matrix.m[0][0] + vector.y * matrix.m[1][0] + vector.z * matrix.m[2][0] + 1.0f * matrix.m[3][0];
+	result.y = vector.x * matrix.m[0][1] + vector.y * matrix.m[1][1] + vector.z * matrix.m[2][1] + 1.0f * matrix.m[3][1];
+	result.z = vector.x * matrix.m[0][2] + vector.y * matrix.m[1][2] + vector.z * matrix.m[2][2] + 1.0f * matrix.m[3][2];
+	float w = vector.x * matrix.m[0][3] + vector.y * matrix.m[1][3] + vector.z * matrix.m[2][3] + 1.0f * matrix.m[3][3];
+	assert(w != 0.0f);
+	result.x /= w;
+	result.y /= w;
+	result.z /= w;
+	return result;
+}
+
 // 正規化
 Vector3 Normalize(const Vector3& v) {
 	float len = Length(v);
@@ -78,7 +106,6 @@ Vector3 Normalize(const Vector3& v) {
 	else
 		return {0.0f, 0.0f, 0.0f};
 }
-
 
 Matrix4x4 Multiply(const Matrix4x4& m1, const Matrix4x4& m2) {
 	Matrix4x4 result{};
@@ -224,9 +251,9 @@ Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Vector3& rotate, const Ve
 	Matrix4x4 rotateXMatrix = MakeRotateXMatrix(rotate.x);
 	Matrix4x4 rotateYMatrix = MakeRotateYMatrix(rotate.y);
 	Matrix4x4 rotateZMatrix = MakeRotateZMatrix(rotate.z);
-	Matrix4x4 rotateMatrix = Multiply(rotateZMatrix, Multiply(rotateYMatrix, rotateXMatrix)); // 回転の順序を修正
+	Matrix4x4 rotateMatrix = Multiply(rotateXMatrix, Multiply(rotateYMatrix, rotateZMatrix));
 	Matrix4x4 translateMatrix = MakeTranslateMatrix(translate);
-	Matrix4x4 affineMatrix = Multiply(scaleMatrix, Multiply(rotateMatrix, translateMatrix));
+	Matrix4x4 affineMatrix = Multiply(Multiply(scaleMatrix, rotateMatrix), translateMatrix);
 
 	return affineMatrix;
 }

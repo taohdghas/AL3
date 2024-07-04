@@ -316,7 +316,8 @@ void Player::MapLeftCollision(CollisionMapInfo& info) {
 // 判定結果を反映して移動させる
 void Player::ResultMove(const CollisionMapInfo& info) {
 	// 移動
-	worldTransform_.translation_ += info.moveAmount;
+	worldTransform_.translation_.x += info.moveAmount.x;
+	worldTransform_.translation_.z += info.moveAmount.z;
 }
 
 // 天井に接触している場合の処理

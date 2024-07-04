@@ -21,6 +21,8 @@ GameScene::~GameScene() {
 	for (Enemy* enemy : enemies_) {
 		delete enemy;
 	}
+	delete modelParticles_;
+	delete deathParticles_;
 	delete modelSkydome_;
 	delete player_;
 	delete skydome_;
@@ -57,6 +59,13 @@ void GameScene::Initialize() {
 		newEnemy->Initialize(modelEnemy_, &viewProjection_, enemyPosition);
 		enemies_.push_back(newEnemy);
 	}
+
+	//パーティクルモデル
+	modelParticles_ = Model::CreateFromOBJ("deathParticle", true);
+	//仮の生成
+	deathParticles_ = new DeathParticles;
+	deathParticles_->Initialize(modelParticles_, &viewProjection_, playerPosition);
+
 	//  3Dモデルの生成
 	modelSkydome_ = Model::CreateFromOBJ("skydome", true);
 	// 天球の生成
@@ -119,11 +128,14 @@ void GameScene::Update() {
 	skydome_->Update();
 	// 自キャラの更新
 	player_->Update();
+	// パーティクルの更新
+	if (deathParticles_) {
+		deathParticles_->Update();
+	}
 	//敵の更新
 	for (Enemy* enemy : enemies_) {
 		enemy->Update();
 	}
-
 	// カメラコントローラの更新
 	cameraController_->Update();
 }
@@ -169,6 +181,10 @@ void GameScene::Draw() {
 	//敵の描画
 	for (Enemy* enemy : enemies_) {
 		enemy->Draw();
+	}
+	//パーティクル描画
+	if (deathParticles_) {
+		deathParticles_->Draw();
 	}
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();

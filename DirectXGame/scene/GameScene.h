@@ -15,6 +15,7 @@
 #include "Enemy.h"
 #include "MapChipField.h"
 #include "CameraController.h"
+#include "DeathParticles.h"
 /// <summary>
 /// ゲームシーン
 /// </summary>
@@ -73,9 +74,11 @@ private:
 	//敵
 	std::list<Enemy*> enemies_;
 	Model* modelEnemy_ = nullptr;
-	//発生させる数
-
-
+	
+	//パーティクル
+	DeathParticles* deathParticles_ = nullptr;
+	Model* modelParticles_ = nullptr;
+	
 	//マップチップフィールド
 	MapChipField* mapChipField_;
 	//カメラコントローラ

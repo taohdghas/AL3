@@ -93,6 +93,9 @@
     <ClCompile Include="aabb.cpp">
       <Filter>ヘッダー ファイル\math</Filter>
     </ClCompile>
+    <ClCompile Include="DeathParticles.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="3d\ViewProjection.h">
@@ -202,6 +205,9 @@
     </ClInclude>
     <ClInclude Include="aabb.h">
       <Filter>ヘッダー ファイル\math</Filter>
+    </ClInclude>
+    <ClInclude Include="DeathParticles.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -2,23 +2,26 @@
 #include "Matrix4x4.h"
 #include "Vector3.h"
 #include <cmath>
+#include <assert.h>
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
 #endif
 
 //Vector3の足し算
 Vector3 operator+(const Vector3& v1, const Vector3& v2);
-Vector3 operator+=(const Vector3& v1, const Vector3& v2);
+Vector3& operator+=(Vector3& v1, const Vector3& v2);
+
 //Vector3の引き算
 Vector3 operator-(const Vector3& v1, const Vector3& v2);
-Vector3 operator-=(const Vector3& v1, const Vector3& v2);
-//代入演算子オーバーロード
-//Vector3の掛け算
+Vector3 operator-=( Vector3& v1, const Vector3& v2);
+
+//Vector3の掛け算(スカラー)
+Vector3 operator*(const Vector3& v, float s);
 Vector3& operator*=(Vector3& v, float s);
 
-//2項演算子オーバーロード
-//Vector3の掛け算
-const Vector3 operator*(const Vector3& v, float s);
+//Vector3同士の掛け算
+Vector3 operator*(const Vector3& v1, const Vector3& v2);
+Vector3& operator*=(Vector3& v1, const Vector3& v2);
 
 //線形補間
 double easeInOutSine(double x);
@@ -38,6 +41,8 @@ float LengthSquared(const Vector3& v);
 // 長さ
 float Length(const Vector3& v);
 
+Vector3 Transform(const Vector3& vector, const Matrix4x4& matrix);
+
 // 正規化
 Vector3 Normalize(const Vector3& v);
 // 平行移動行列
@@ -50,6 +55,7 @@ Matrix4x4 MakeRotateXMatrix(float radian);
 Matrix4x4 MakeRotateYMatrix(float radian);
 // z軸回転行列
 Matrix4x4 MakeRotateZMatrix(float radian);
+
 Matrix4x4 Multiply(const Matrix4x4& m1, const Matrix4x4& m2);
-	
+//アフィン変換
 Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Vector3& rotate, const Vector3& translate);
