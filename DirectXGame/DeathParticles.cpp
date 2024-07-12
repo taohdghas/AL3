@@ -18,7 +18,7 @@ void DeathParticles::Initialize(Model* model, ViewProjection* viewProjection, co
 
 void DeathParticles::Update() {
 	//早期リターン
-	if (isFinished_) {
+	if (finished_) {
 		return;
 	}
 
@@ -41,7 +41,7 @@ void DeathParticles::Update() {
 	if (counter_ >= kDuration) {
 		counter_ = kDuration;
 		//終了扱いにする
-		isFinished_ = true;
+		finished_ = true;
 	}
 	for (auto& worldTransform : worldTransforms_) {
 		worldTransform.UpdateMatrix();
@@ -56,7 +56,7 @@ void DeathParticles::Update() {
 
 void DeathParticles::Draw() {
     //早期リターン
-	if (isFinished_) {
+	if (finished_) {
 		return;
 	}
 	for (auto& worldTransform : worldTransforms_) {

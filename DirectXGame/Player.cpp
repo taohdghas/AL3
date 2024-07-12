@@ -385,8 +385,8 @@ void Player::OnGround(const CollisionMapInfo& info) {
 //衝突応答
 void Player::OnCollision(const Enemy* enemy) {
 	(void)enemy;
-	//ジャンプ歌詞(仮処理)
-	velocity_.y += 1.0f;
+	//デスフラグを立てる
+	isDead_ = true;
 }
 
 Vector3 Player::CornerPosition(const Vector3& center, Corner corner) {

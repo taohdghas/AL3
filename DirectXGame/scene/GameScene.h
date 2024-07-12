@@ -19,6 +19,13 @@
 /// <summary>
 /// ゲームシーン
 /// </summary>
+
+//ゲームのフェーズ(型)
+enum class Phase { 
+	kPlay,//ゲームプレイ
+	kDeath,//デス演出
+};
+
 class GameScene {
 
 public: // メンバ関数
@@ -52,6 +59,12 @@ public: // メンバ関数
 	//全ての当たり判定を行う
 	void CheckAllCollisions();
 
+	//フェーズの切り替え
+	void ChangePhase();
+
+	//デスフラグのgetter
+	bool IsFinished() const { return finished_; }
+
 private: 
 	// メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
@@ -84,6 +97,13 @@ private:
 	//カメラコントローラ
 	CameraController* cameraController_ = nullptr;
 	CameraController::Rect movableArea = {0, 100, 0, 100};
+
+	//ゲームの現在フェーズ(変数)
+	Phase phase_;
+
+	//終了フラグ
+	bool finished_ = false;
+
 	/// <summary>
 	/// ゲームシーン用
 	/// </summary>
