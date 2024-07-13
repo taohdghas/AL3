@@ -16,7 +16,6 @@ GameScene::~GameScene() {
 	}
 	worldTransformBlocks_.clear();
 	delete debugCamera_;
-	delete modelBlocks_;
 	delete modelEnemy_;
 	for (Enemy* enemy : enemies_) {
 		delete enemy;
@@ -141,6 +140,7 @@ void GameScene::Update() {
 		break;
 
 	case Phase::kDeath:
+		//デス演出フェーズの処理
 		//   天球の更新
 		skydome_->Update();
 		// 敵の更新
