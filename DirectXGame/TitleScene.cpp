@@ -20,7 +20,7 @@ void TitleScene::Update() {
 	Timer_ += 1.0f / 60.0f;
 	float param = std::sin(2.0f * std::numbers::pi_v<float> * Timer_ / kWalklMotionTime);
 	float radian = kWalkMotionAngleStart + kWalkMotionAngleEnd * (param + 1.0f) / 2.0f;
-	titleWorldTransform_.rotation_.y = radian * (std::numbers::pi_v<float> / 90.0f);
+	titleWorldTransform_.rotation_.y = radian * (std::numbers::pi_v<float> / 180.0f);
 	// 行列計算
 	titleWorldTransform_.UpdateMatrix();
 }
