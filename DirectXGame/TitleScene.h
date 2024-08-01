@@ -4,6 +4,7 @@
 #include "WorldTransform.h"
 #include "DirectXCommon.h"
 #include "Input.h"
+#include "Fade.h"
     /// <summary>
 /// 
 /// </summary>
@@ -38,4 +39,5 @@ private:
 	WorldTransform titleWorldTransform_;
 	ViewProjection viewProjection_;
 	Model* titlemodel_ = nullptr;
+	Fade* fade_ = nullptr;
 };

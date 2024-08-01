@@ -3,7 +3,10 @@
 
 TitleScene::TitleScene() {}
 
-TitleScene::~TitleScene() { delete titlemodel_; }
+TitleScene::~TitleScene() { 
+	delete titlemodel_;
+	delete fade_;
+}
 
 void TitleScene::Initialize() { 
 	dxCommon_ = DirectXCommon::GetInstance();
@@ -11,6 +14,8 @@ void TitleScene::Initialize() {
 	titleWorldTransform_.Initialize();
 	viewProjection_.Initialize();
 	Timer_ = 0.0f;
+	fade_ = new Fade();
+	fade_->Initialize();
 }
 
 void TitleScene::Update() {
@@ -23,6 +28,8 @@ void TitleScene::Update() {
 	titleWorldTransform_.rotation_.y = radian * (std::numbers::pi_v<float> / 180.0f);
 	// 行列計算
 	titleWorldTransform_.UpdateMatrix();
+	//フェード更新
+	fade_->Update();
 }
 
 void TitleScene::Draw() {
@@ -31,6 +38,8 @@ void TitleScene::Draw() {
 	Model::PreDraw(commandList);
 
 	titlemodel_->Draw(titleWorldTransform_, viewProjection_);
+	//フェード
+	fade_->Draw(commandList);
 
 	Model::PostDraw();
 }
