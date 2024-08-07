@@ -10,8 +10,12 @@
 /// 自キャラ
 /// </summary>
 class Player {
-
 public:
+
+	Player();
+
+	~Player();
+
 	/// <summary>
 	/// 初期化
 	/// </summary>
