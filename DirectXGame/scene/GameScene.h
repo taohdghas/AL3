@@ -9,6 +9,7 @@
 #include "WorldTransform.h"
 #include "Player.h"
 #include "DebugCamera.h"
+#include "Enemy.h"
 
 /// <summary>
 /// ゲームシーン
@@ -47,6 +48,7 @@ private: // メンバ変数
 	Audio* audio_ = nullptr;
 	//テクスチャハンドル
 	uint32_t textureHandle_ = 0;
+	uint32_t EnemytextureHandle_ = 0;
 	//3Dモデルデータ
 	Model* model_ = nullptr;
 	//ビュープロジェクション
@@ -57,6 +59,8 @@ private: // メンバ変数
 	bool isDebugCameraActive_ = false;
 	//デバックカメラ
 	DebugCamera* debugCamera_ = nullptr;
+	//敵
+	Enemy* enemy_ = nullptr;
 
 	/// <summary>
 	/// ゲームシーン用

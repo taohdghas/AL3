@@ -12,6 +12,8 @@ GameScene::~GameScene() {
 	delete player_;
 	// デバックカメラの開放
 	delete debugCamera_;
+	//敵の解放
+	delete enemy_;
 }
 
 void GameScene::Initialize() {
@@ -21,6 +23,7 @@ void GameScene::Initialize() {
 	audio_ = Audio::GetInstance();
 	// ファイル名を指定してテクスチャを読み込む
 	textureHandle_ = TextureManager::Load("uvChecker.png");
+	EnemytextureHandle_ = TextureManager::Load("tex1.png");
 	// 3Dモデルデータの生成
 	model_ = Model::Create();
 	// ビュープロジェクションの初期化
@@ -35,11 +38,18 @@ void GameScene::Initialize() {
 	AxisIndicator::GetInstance()->SetVisible(true);
 	//軸方向表示が参照するビュープロジェクションを指定する(アドレス渡し)
 	AxisIndicator::GetInstance()->SetTargetViewProjection(&viewProjection_);
+	//敵の生成
+	enemy_ = new Enemy();
+	//敵の初期化
+	enemy_->Initialize(model_, EnemytextureHandle_,Vector3(0.0f,0.0f,-0.1f));
 }
 
 void GameScene::Update() {
 	// 自キャラの更新
 	player_->Update();
+
+	//敵の更新
+	enemy_->Update();
 
 	// カメラの処理
 	if (isDebugCameraActive_) {
@@ -93,6 +103,9 @@ void GameScene::Draw() {
 
 	// 自キャラの描画
 	player_->Draw(viewProjection_);
+
+	//敵の描画
+	enemy_->Draw(viewProjection_);
 
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();
