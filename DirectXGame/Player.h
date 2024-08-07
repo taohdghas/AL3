@@ -4,6 +4,7 @@
 #include "Input.h"
 #include "mymath.h"
 #include "ImGuiManager.h"
+#include "PlayerBullet.h"
 #pragma once
 /// <summary>
 /// 自キャラ
@@ -24,7 +25,13 @@ public:
 	/// <summary>
 	/// 描画
 	/// </summary>
-	void Draw(ViewProjection&viewProjection);
+	void Draw(const ViewProjection&viewProjection);
+
+	//旋回
+	void Rotate();
+
+	//攻撃
+	void Attack();
 
 private:
 	//ワールド変換データ
@@ -35,5 +42,6 @@ private:
 	uint32_t textureHandle_ = 0u;
 	//キーボード入力
 	Input* input_ = nullptr;
-
+	//弾
+	PlayerBullet* bullet_ = nullptr;
 };
