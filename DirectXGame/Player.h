@@ -5,6 +5,7 @@
 #include "mymath.h"
 #include "ImGuiManager.h"
 #include "PlayerBullet.h"
+#include <list>
 #pragma once
 /// <summary>
 /// 自キャラ
@@ -47,5 +48,5 @@ private:
 	//キーボード入力
 	Input* input_ = nullptr;
 	//弾
-	PlayerBullet* bullet_ = nullptr;
+	std::list<PlayerBullet*> bullets_;
 };
