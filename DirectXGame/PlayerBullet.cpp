@@ -19,6 +19,11 @@ void PlayerBullet::Update() {
 	//座標を移動させる
 	worldTransform_.translation_ = Add(worldTransform_.translation_, velocity_);
 
+	//時間経過で消える
+	if (--deathTimer_ <= 0) {
+		isDead_ = true;
+	}
+
 	worldTransform_.UpdateMatrix(); 
 }
 
