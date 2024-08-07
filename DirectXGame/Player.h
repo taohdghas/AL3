@@ -1,6 +1,9 @@
 #include "Model.h"
 #include "WorldTransform.h"
 #include "assert.h"
+#include "Input.h"
+#include "mymath.h"
+#include "ImGuiManager.h"
 #pragma once
 /// <summary>
 /// 自キャラ
@@ -30,4 +33,7 @@ private:
 	Model* model_ = nullptr;
 	//テクスチャハンドル
 	uint32_t textureHandle_ = 0u;
+	//キーボード入力
+	Input* input_ = nullptr;
+
 };

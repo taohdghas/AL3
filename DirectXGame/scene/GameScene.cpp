@@ -9,6 +9,8 @@ GameScene::~GameScene() {
 	delete model_;
 	// 自キャラの解放
 	delete player_;
+	// デバックカメラの開放
+	delete debugCamera_;
 }
 
 void GameScene::Initialize() {
@@ -22,15 +24,35 @@ void GameScene::Initialize() {
 	model_ = Model::Create();
 	// ビュープロジェクションの初期化
 	viewProjection_.Initialize();
-	//自キャラの生成
+	// 自キャラの生成
 	player_ = new Player();
-	//自キャラの初期化
-	player_->Initialize(model_,textureHandle_);
+	// 自キャラの初期化
+	player_->Initialize(model_, textureHandle_);
+	// デバックカメラの生成
+	debugCamera_ = new DebugCamera(1280, 720);
 }
 
 void GameScene::Update() {
-    //自キャラの更新
+	// 自キャラの更新
 	player_->Update();
+	
+	//カメラの処理
+	if (isDebugCameraActive_) {
+		// デバックカメラの更新
+		debugCamera_->Update();
+		viewProjection_.matView = debugCamera_->GetViewProjection();
+		viewProjection_.matProjection = debugCamera_->GetViewProjection();
+	}
+#ifdef _DEBUG
+	if (input_->TriggerKey(DIK_Q)) {
+		if (!isDebugCameraActive_) {
+			isDebugCameraActive_ = true;
+		} else if (isDebugCameraActive_) {
+			isDebugCameraActive_ = false;
+		}
+	}
+#endif
+	
 }
 
 void GameScene::Draw() {
@@ -60,7 +82,7 @@ void GameScene::Draw() {
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	/// </summary>
 
-	//自キャラの描画
+	// 自キャラの描画
 	player_->Draw(viewProjection_);
 
 	// 3Dオブジェクト描画後処理
