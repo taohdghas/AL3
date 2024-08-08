@@ -3,6 +3,8 @@
 #include "assert.h"
 #include "TextureManager.h"
 #include "mymath.h"
+#include "BaseEnemyState.h"
+#include "EnemyStateApproach.h"
 #pragma once
 /// <summary>
 /// 敵
@@ -21,11 +23,15 @@ public:
 
 	void Draw(const ViewProjection& viewProjection);
 
-	//接近フェーズ
-	void Approach();
+	//ワールドのゲッター
+	const Vector3& GetWorld() const { return worldTransform_.translation_; }
+	//ワールドのセッター
+	void SetWorld(const Vector3& translation) { worldTransform_.translation_ = translation; }
 
-	//離脱フェーズ
-	void Leave();
+	//速度のゲッター
+	const Vector3& GetVelocity() const { return velocity_; }
+    //速度のセッター
+	void SetVelocity(const Vector3& velocity) { velocity_ = velocity; }
 
 private:
 	//メンバ関数ポインタのテーブル
@@ -40,4 +46,6 @@ private:
 	Vector3 velocity_ = {};
     //フェーズ
 	Phase phase_ = Phase::Approach;
+	//状態
+	std::unique_ptr<BaseEnemyState> state_;
 };

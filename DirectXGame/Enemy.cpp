@@ -11,12 +11,15 @@ void Enemy::Initialize(Model* model, uint32_t textureHandle,const Vector3& veloc
 	worldTransform_.Initialize();
 	worldTransform_.translation_ = {0.0f, 1.0f, 10.0f};
 	velocity_ = velocity;
+	//初期状態をセット
+	ChangeState(std::make_unique<EnemyStateApproach>(this));
 }
 
 void Enemy::Update() {
     
 	//現在フェーズの関数を実行
 	(this->*spPhase[static_cast<size_t>(phase_)])();
+	state_->Update();
 
 	//移動
 	worldTransform_.translation_ = Add(worldTransform_.translation_,velocity_ );
@@ -29,18 +32,9 @@ void Enemy::Draw(const ViewProjection& viewProjection) {
 }
 
 //接近フェーズ
-void Enemy::Approach() {
-	// 移動(ベクトルを加算)
-	worldTransform_.translation_ = Add(worldTransform_.translation_, velocity_);
-	// 既定の位置に到達したら離脱
-	if (worldTransform_.translation_.z < 0.0f) {
-		phase_ = Phase::Leave;
-	}
-}
 
-//離脱フェーズ
-void Enemy::Leave() {
-	velocity_ = {-0.1f, 0.1f, 0.0f};
-	// 移動(ベクトルを加算)
-	worldTransform_.translation_ = Add(worldTransform_.translation_, velocity_);
+
+void Enemy::ChangeState(std::unique_ptr<BaseEnemyState> state) {
+	//引数で受け取った状態を次の状態としてセットする
+	state_ = std::move(state);
 }
