@@ -1,5 +1,8 @@
 #include "Enemy.h"
 
+//メンバ関数ポインタテーブル
+void (Enemy::*Enemy::spPhase[])() = {&Enemy::Approach, &Enemy::Leave};
+
 void Enemy::Initialize(Model* model, uint32_t textureHandle,const Vector3& velocity) {
 	// NULLポインタチェック
 	assert(model);
@@ -11,15 +14,10 @@ void Enemy::Initialize(Model* model, uint32_t textureHandle,const Vector3& veloc
 }
 
 void Enemy::Update() {
-	switch (phase_) { 
-	case Phase::Approach:
-	default:
-		Approach();
-		break;
-	case Phase::Leave:
-		Leave();
-		break;
-	}
+    
+	//現在フェーズの関数を実行
+	(this->*spPhase[static_cast<size_t>(phase_)])();
+
 	//移動
 	worldTransform_.translation_ = Add(worldTransform_.translation_,velocity_ );
 

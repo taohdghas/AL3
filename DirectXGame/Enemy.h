@@ -28,6 +28,8 @@ public:
 	void Leave();
 
 private:
+	//メンバ関数ポインタのテーブル
+	static void (Enemy::*spPhase[])();
 	// ワールド変換データ
 	WorldTransform worldTransform_;
 	// モデル
