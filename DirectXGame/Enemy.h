@@ -7,6 +7,12 @@
 /// <summary>
 /// 敵
 /// </summary>
+
+//行動フェーズ
+enum class Phase {
+	Approach,//接近する
+	Leave,//離脱する
+};
 class Enemy {
 public:
 	void Initialize(Model* model, uint32_t textureHandle, const Vector3& velocity);
@@ -14,6 +20,12 @@ public:
 	void Update();
 
 	void Draw(const ViewProjection& viewProjection);
+
+	//接近フェーズ
+	void Approach();
+
+	//離脱フェーズ
+	void Leave();
 
 private:
 	// ワールド変換データ
@@ -23,5 +35,7 @@ private:
 	// テクスチャハンドル
 	uint32_t textureHandle_ = 0u;
 	//移動
-	Vector3 velocity_ = {-0.1f, -0.1f, -0.1f};
+	Vector3 velocity_ = {};
+    //フェーズ
+	Phase phase_ = Phase::Approach;
 };
