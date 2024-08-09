@@ -1,4 +1,5 @@
 #include "Enemy.h"
+#include "Player.h"
 
 Enemy::Enemy() {}
 
@@ -15,7 +16,7 @@ void Enemy::Initialize(Model* model, uint32_t textureHandle,const Vector3& veloc
 	model_ = model;
 	textureHandle_ = textureHandle;
 	worldTransform_.Initialize();
-	worldTransform_.translation_ = {3.0f, 1.0f, 30.0f};
+	worldTransform_.translation_ = {3.0f, 1.0f, 60.0f};
 	velocity_ = velocity;
 	//弾を発射
 	Fire();
@@ -88,9 +89,15 @@ void Enemy::Leave() {
 }
 
 void Enemy::Fire() {
+     assert(player_);
 	// 弾の速度
-	const float kBulletSpeed = -1.0f;
-	Vector3 velocity(0, 0, kBulletSpeed);
+	const float kBulletSpeed = 1.0f;
+
+	Vector3 distance = player_->GetWorldPosition() -worldTransform_.translation_;
+
+    distance = Normalize(distance);
+
+	Vector3 velocity = {Multiply( kBulletSpeed,distance)};
 
 	// 速度ベクトルを自機の向きに合わせて回転させる
 	velocity = TransformNormal(velocity, worldTransform_.matWorld_);
@@ -107,4 +114,15 @@ void Enemy::Fire() {
 void Enemy::ApproachReset() {
 	//発射タイマーを初期化
 	fireTimer = kFireInterval;
+}
+
+//ワールド座標を取得
+Vector3 Enemy::GetWorldPosition() {
+	//ワールド座標を入れる変数
+	Vector3 worldPos;
+	//ワールド行列の平行移動成分を取得
+	worldPos.x = worldTransform_.matWorld_.m[3][0];
+	worldPos.y = worldTransform_.matWorld_.m[3][1];
+	worldPos.z = worldTransform_.matWorld_.m[3][2];
+	return worldPos;
 }

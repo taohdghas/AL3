@@ -10,6 +10,9 @@
 /// 敵
 /// </summary>
 
+//自機クラスの前方宣言
+class Player;
+
 //行動フェーズ
 enum class Phase {
 	Approach,//接近する
@@ -38,6 +41,11 @@ public:
 	//接近フェーズ初期化
 	void ApproachReset();
 
+	void SetPlayer(Player* player) { player_ = player; }
+
+	//ワールド座標を取得
+	Vector3 GetWorldPosition();
+
 	// 発射間隔
 	static const int kFireInterval = 60;
 
@@ -56,4 +64,6 @@ private:
 	std::list<EnemyBullet*> bullets_;
 	//発射タイマー
 	int32_t fireTimer = 0;
+	//自キャラ
+	Player* player_ = nullptr;
 };
