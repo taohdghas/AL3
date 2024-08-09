@@ -121,6 +121,12 @@ void Player::Attack() {
 	}
 }
 
+//衝突時コールバック
+/**
+void Player::OnCollision() {
+
+}
+*/
 //ワールド座標を取得
 Vector3 Player::GetWorldPosition() {
 	//ワールド座標を入れる関数

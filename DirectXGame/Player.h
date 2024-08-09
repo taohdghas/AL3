@@ -38,8 +38,14 @@ public:
 	//攻撃
 	void Attack();
 
+	//衝突を検出したら呼び出されるコールバック関数
+	void OnCollision();
+
 	//ワールド座標を取得
 	Vector3 GetWorldPosition();
+
+	//弾リストを取得
+	const std::list<PlayerBullet*>& Getbullets() const { return bullets_; }
 
 private:
 	//ワールド変換データ

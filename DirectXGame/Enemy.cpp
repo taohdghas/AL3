@@ -16,7 +16,7 @@ void Enemy::Initialize(Model* model, uint32_t textureHandle,const Vector3& veloc
 	model_ = model;
 	textureHandle_ = textureHandle;
 	worldTransform_.Initialize();
-	worldTransform_.translation_ = {3.0f, 1.0f, 60.0f};
+	worldTransform_.translation_ = {2.0f, 0.0f, 60.0f};
 	velocity_ = velocity;
 	//弾を発射
 	Fire();
@@ -49,7 +49,7 @@ void Enemy::Update() {
 	}
 
 	//移動
-	worldTransform_.translation_ = Add(worldTransform_.translation_,velocity_ );
+	//worldTransform_.translation_ = Add(worldTransform_.translation_,velocity_ );
 
 	worldTransform_.UpdateMatrix(); 
 }
@@ -76,14 +76,16 @@ void Enemy::Approach() {
 	// 移動(ベクトルを加算)
 	worldTransform_.translation_ = Add(worldTransform_.translation_, velocity_);
 	// 既定の位置に到達したら離脱
+	
 	if (worldTransform_.translation_.z < 0.0f) {
 		phase_ = Phase::Leave;
 	}
+	
 }
 
 //離脱フェーズ
 void Enemy::Leave() {
-	velocity_ = {-0.1f, 0.1f, 0.0f};
+	velocity_ = {-1.0f, 1.0f, 0.0f};
 	// 移動(ベクトルを加算)
 	worldTransform_.translation_ = Add(worldTransform_.translation_, velocity_);
 }
@@ -114,6 +116,11 @@ void Enemy::Fire() {
 void Enemy::ApproachReset() {
 	//発射タイマーを初期化
 	fireTimer = kFireInterval;
+}
+
+//衝突時コールバック
+void Player::OnCollision() {
+
 }
 
 //ワールド座標を取得
