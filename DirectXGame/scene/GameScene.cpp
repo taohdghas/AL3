@@ -14,6 +14,10 @@ GameScene::~GameScene() {
 	delete debugCamera_;
 	//敵の解放
 	delete enemy_;
+	//天球の解放
+	delete skydome_;
+	//3Dモデルの解放
+	delete modelSkydome_;
 }
 
 void GameScene::Initialize() {
@@ -26,6 +30,7 @@ void GameScene::Initialize() {
 	EnemytextureHandle_ = TextureManager::Load("red1x1.png");
 	// 3Dモデルデータの生成
 	model_ = Model::Create();
+	//ビュープロジェクションのfarZを適度に大きい値に変更する
 	// ビュープロジェクションの初期化
 	viewProjection_.Initialize();
 	// 自キャラの生成
@@ -44,6 +49,12 @@ void GameScene::Initialize() {
 	enemy_->SetPlayer(player_);
 	//敵の初期化
 	enemy_->Initialize(model_, EnemytextureHandle_,Vector3(0.0f,0.0f,-0.1f));
+	//3Dモデルの生成
+	modelSkydome_ = Model::CreateFromOBJ("sky", true);
+	// 天球の生成
+	skydome_ = new Skydome();
+	// 天球の初期化
+	skydome_->Initialize(modelSkydome_);
 }
 
 void GameScene::Update() {
@@ -52,6 +63,9 @@ void GameScene::Update() {
 
 	//敵の更新
 	enemy_->Update();
+
+	//天球の更新
+	skydome_->Update();
 
 	//衝突判定
 	CheckAllCollisions();
@@ -105,10 +119,11 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	/// </summary>
-
+	
+	//天球の描画
+	skydome_->Draw(viewProjection_);
 	// 自キャラの描画
 	player_->Draw(viewProjection_);
-
 	//敵の描画
 	enemy_->Draw(viewProjection_);
 

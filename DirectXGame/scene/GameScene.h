@@ -10,6 +10,7 @@
 #include "Sprite.h"
 #include "ViewProjection.h"
 #include "WorldTransform.h"
+#include "Skydome.h"
 
 /// <summary>
 /// ゲームシーン
@@ -74,6 +75,10 @@ private: // メンバ変数
 	float Enemyradius_ = 1.0f;
 	//敵の弾の半径
 	float EnemyBulletradius_ = 1.0f;
+	//天球
+	Skydome* skydome_ = nullptr;
+	//3Dモデル
+	Model* modelSkydome_ = nullptr;
 
 	/// <summary>
 	/// ゲームシーン用
