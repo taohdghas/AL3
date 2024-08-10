@@ -7,7 +7,7 @@
 /// </summary>
 class Skydome {
 public:
-	void Initialize(Model* model);
+	void Initialize(Model* model,ViewProjection*viewProjection);
 
 	void Update();
 
@@ -18,4 +18,6 @@ private:
 	WorldTransform worldTransform_;
 	//モデル
 	Model* model_ = nullptr;
+	//ビュープロジェクション
+	ViewProjection* viewProjection_;
 };

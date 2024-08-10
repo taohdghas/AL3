@@ -31,6 +31,7 @@ void GameScene::Initialize() {
 	// 3Dモデルデータの生成
 	model_ = Model::Create();
 	//ビュープロジェクションのfarZを適度に大きい値に変更する
+	//viewProjection_.farZ = 1000;
 	// ビュープロジェクションの初期化
 	viewProjection_.Initialize();
 	// 自キャラの生成
@@ -54,7 +55,7 @@ void GameScene::Initialize() {
 	// 天球の生成
 	skydome_ = new Skydome();
 	// 天球の初期化
-	skydome_->Initialize(modelSkydome_);
+	skydome_->Initialize(modelSkydome_,&viewProjection_);
 }
 
 void GameScene::Update() {
