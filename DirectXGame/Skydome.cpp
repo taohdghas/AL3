@@ -1,10 +1,10 @@
 #include "Skydome.h"
 
-void Skydome::Initialize(Model* model,ViewProjection*viewProjection) { 
+void Skydome::Initialize(Model* model,uint32_t textureHandle) { 
 	// NULLポインタチェック
 	assert(model);
 	model_ = model;
-	viewProjection_ = viewProjection;
+	textureHandle_ = textureHandle;
 	worldTransform_.Initialize(); 
 }
 

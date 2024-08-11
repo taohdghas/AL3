@@ -7,7 +7,7 @@
 /// </summary>
 class Skydome {
 public:
-	void Initialize(Model* model,ViewProjection*viewProjection);
+	void Initialize(Model* model,uint32_t textureHandle);
 
 	void Update();
 
@@ -18,6 +18,6 @@ private:
 	WorldTransform worldTransform_;
 	//モデル
 	Model* model_ = nullptr;
-	//ビュープロジェクション
-	ViewProjection* viewProjection_;
+    //テクスチャハンドル
+	uint32_t textureHandle_ = 0u;
 };

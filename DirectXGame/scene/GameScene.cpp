@@ -28,6 +28,8 @@ void GameScene::Initialize() {
 	// ファイル名を指定してテクスチャを読み込む
 	textureHandle_ = TextureManager::Load("uvChecker.png");
 	EnemytextureHandle_ = TextureManager::Load("red1x1.png");
+	// 3Dモデルの生成
+	modelSkydome_ = Model::CreateFromOBJ("sky", true);
 	// 3Dモデルデータの生成
 	model_ = Model::Create();
 	//ビュープロジェクションのfarZを適度に大きい値に変更する
@@ -50,12 +52,10 @@ void GameScene::Initialize() {
 	enemy_->SetPlayer(player_);
 	//敵の初期化
 	enemy_->Initialize(model_, EnemytextureHandle_,Vector3(0.0f,0.0f,-0.1f));
-	//3Dモデルの生成
-	modelSkydome_ = Model::CreateFromOBJ("sky", true);
 	// 天球の生成
 	skydome_ = new Skydome();
 	// 天球の初期化
-	skydome_->Initialize(modelSkydome_,&viewProjection_);
+	skydome_->Initialize(modelSkydome_,textureHandle_);
 }
 
 void GameScene::Update() {
