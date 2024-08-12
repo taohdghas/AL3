@@ -11,6 +11,7 @@
 #include "ViewProjection.h"
 #include "WorldTransform.h"
 #include "Skydome.h"
+#include "RailCamera.h"
 
 /// <summary>
 /// ゲームシーン
@@ -79,6 +80,12 @@ private: // メンバ変数
 	Skydome* skydome_ = nullptr;
 	//3Dモデル
 	Model* modelSkydome_ = nullptr;
+	//レールカメラ
+	RailCamera* railcamera_ = nullptr;
+	//レールカメラの座標
+	Vector3 railPosition = {0.0f, 0.0f, -100.0f};
+	//レールカメラ回転
+	Vector3 railRotation = {0.0f, 0.0f, 0.0f};
 
 	/// <summary>
 	/// ゲームシーン用

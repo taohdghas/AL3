@@ -18,6 +18,8 @@ GameScene::~GameScene() {
 	delete skydome_;
 	//3Dモデルの解放
 	delete modelSkydome_;
+	//レールカメラの解放
+	delete railcamera_;
 }
 
 void GameScene::Initialize() {
@@ -38,8 +40,9 @@ void GameScene::Initialize() {
 	viewProjection_.Initialize();
 	// 自キャラの生成
 	player_ = new Player();
+	Vector3 playerPosition(0, 0, 50);
 	// 自キャラの初期化
-	player_->Initialize(model_, textureHandle_);
+	player_->Initialize(model_, textureHandle_,playerPosition);
 	// デバックカメラの生成
 	debugCamera_ = new DebugCamera(1280, 720);
 	//軸方向表示の表示を有効にする
@@ -56,6 +59,12 @@ void GameScene::Initialize() {
 	skydome_ = new Skydome();
 	// 天球の初期化
 	skydome_->Initialize(modelSkydome_,textureHandle_);
+	//レールカメラの生成
+	railcamera_ = new RailCamera();
+	//レールカメラの初期化
+	railcamera_->Initialize(railPosition,railRotation);
+	//自キャラとレールカメラの親子関係を結ぶ
+	player_->SetParent(&railcamera_->GetWorldtransform());
 }
 
 void GameScene::Update() {
@@ -67,6 +76,9 @@ void GameScene::Update() {
 
 	//天球の更新
 	skydome_->Update();
+
+	//レールカメラの更新
+	railcamera_->Update();
 
 	//衝突判定
 	CheckAllCollisions();
@@ -80,8 +92,12 @@ void GameScene::Update() {
 		// ビュープロジェクション行列の転送
 		viewProjection_.TransferMatrix();
 	} else {
-		// ビュープロジェクション行列の更新と転送
-		viewProjection_.UpdateMatrix();
+
+		railcamera_->Update();
+		viewProjection_.matView = railcamera_->GetViewprojection().matView;
+		viewProjection_.matProjection = railcamera_->GetViewprojection().matProjection;
+		// ビュープロジェクション行列の転送
+		viewProjection_.TransferMatrix();
 	}
 #ifdef _DEBUG
 	if (input_->TriggerKey(DIK_Q)) {

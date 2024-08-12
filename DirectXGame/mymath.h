@@ -43,7 +43,8 @@ float Length(const Vector3& v);
 
 Vector3 Transform(const Vector3& vector, const Matrix4x4& matrix);
 
-// 正規化
+Matrix4x4 Inverse(const Matrix4x4& m);
+    // 正規化
 Vector3 Normalize(const Vector3& v);
 // 平行移動行列
 Matrix4x4 MakeTranslateMatrix(const Vector3& translate);
