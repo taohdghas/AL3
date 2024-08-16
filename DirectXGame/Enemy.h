@@ -12,6 +12,8 @@
 
 //自機クラスの前方宣言
 class Player;
+//GameSceneクラスの前方宣言
+class GameScene;
 
 //行動フェーズ
 enum class Phase {
@@ -23,7 +25,7 @@ public:
 	Enemy();
 	~Enemy();
 
-	void Initialize(Model* model, uint32_t textureHandle, const Vector3& velocity);
+	void Initialize(Model* model,const Vector3&position);
 
 	void Update();
 
@@ -46,6 +48,10 @@ public:
 	// 衝突を検出したら呼び出されるコールバック関数
 	void OnCollision();
 
+	void SetGameScene(GameScene* gameScene) { gameScene_ = gameScene; }
+
+	bool IsDead() const { return isDead_; }
+
 	//ワールド座標を取得
 	Vector3 GetWorldPosition();
 
@@ -63,7 +69,9 @@ private:
 	// テクスチャハンドル
 	uint32_t textureHandle_ = 0u;
 	//移動
-	Vector3 velocity_ = {};
+	Vector3 velocity_ = {0, 0, -0.1f};
+	//離脱時速度
+	Vector3 LeaveVelo_ = {-1.0f, 1.0f, 0.0f};
     //フェーズ
 	Phase phase_ = Phase::Approach;
 	// 弾
@@ -72,4 +80,8 @@ private:
 	int32_t fireTimer = 0;
 	//自キャラ
 	Player* player_ = nullptr;
+	//ゲームシーン
+	GameScene* gameScene_ = nullptr;
+	// デスフラグ
+	bool isDead_ = false;
 };

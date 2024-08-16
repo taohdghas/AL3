@@ -1,38 +1,30 @@
 #include "Enemy.h"
 #include "Player.h"
+#include "GameScene.h"
 
 Enemy::Enemy() {}
 
 Enemy::~Enemy() {
-	// bullet_の解放
-	for (EnemyBullet* bullet : bullets_) {
-		delete bullet;
-	}
+	
 }
 
-void Enemy::Initialize(Model* model, uint32_t textureHandle,const Vector3& velocity) {
+void Enemy::Initialize(Model* model,const Vector3&position) {
 	// NULLポインタチェック
 	assert(model);
 	model_ = model;
-	textureHandle_ = textureHandle;
+	textureHandle_ = TextureManager::Load("red1x1.png");
 	worldTransform_.Initialize();
-	worldTransform_.translation_ = {2.0f, 0.0f, 60.0f};
-	velocity_ = velocity;
+	worldTransform_.translation_ = position;
+	velocity_ = {0, 0, -0.1f};
+	LeaveVelo_ = {-1.0f, 1.0f, 0.0f};
 	//弾を発射
-	Fire();
+	//Fire();
 	//接近フェーズ初期化
 	ApproachReset();
 }
 
 void Enemy::Update() {
-	// デスフラグの立った弾を削除
-	bullets_.remove_if([](EnemyBullet* bullet) {
-		if (bullet->IsDead()) {
-			delete bullet;
-			return true;
-		}
-		return false;
-	});
+
 	switch (phase_) { 
 	case Phase::Approach:
 	default:
@@ -43,11 +35,6 @@ void Enemy::Update() {
 		break;
 	}
 
-    // 弾更新
-	for (EnemyBullet* bullet : bullets_) {
-		bullet->Update();
-	}
-
 	//移動
 	//worldTransform_.translation_ = Add(worldTransform_.translation_,velocity_ );
 
@@ -56,10 +43,6 @@ void Enemy::Update() {
 
 void Enemy::Draw(const ViewProjection& viewProjection) { 
 	model_->Draw(worldTransform_, viewProjection, textureHandle_);
-	// 弾の描画
-	for (EnemyBullet* bullet : bullets_) {
-		bullet->Draw(viewProjection);
-	}
 }
 
 //接近フェーズ
@@ -85,9 +68,8 @@ void Enemy::Approach() {
 
 //離脱フェーズ
 void Enemy::Leave() {
-	velocity_ = {-1.0f, 1.0f, 0.0f};
 	// 移動(ベクトルを加算)
-	worldTransform_.translation_ = Add(worldTransform_.translation_, velocity_);
+	worldTransform_.translation_ = Add(worldTransform_.translation_,LeaveVelo_);
 }
 
 void Enemy::Fire() {
@@ -108,8 +90,7 @@ void Enemy::Fire() {
 	EnemyBullet* newBullet = new EnemyBullet();
 	newBullet->Initialize(model_, worldTransform_.translation_, velocity);
 
-	// 弾を登録する
-	bullets_.push_back(newBullet);
+	gameScene_->AddEnemyBullet(newBullet);
 }
 
 //接近フェーズ初期化
@@ -119,9 +100,7 @@ void Enemy::ApproachReset() {
 }
 
 //衝突時コールバック
-void Player::OnCollision() {
-
-}
+void Enemy::OnCollision() { isDead_ = true; }
 
 //ワールド座標を取得
 Vector3 Enemy::GetWorldPosition() {

@@ -122,11 +122,11 @@ void Player::Attack() {
 }
 
 //衝突時コールバック
-/**
+
 void Player::OnCollision() {
 
 }
-*/
+
 
 void Player::SetParent(const WorldTransform* parent) {
 	//親子関係を結ぶ
