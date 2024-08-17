@@ -1,4 +1,5 @@
 #include "Player.h"
+#include "WinApp.h"
 
 Player::Player() {}
 
@@ -7,6 +8,8 @@ Player::~Player() {
 	for (PlayerBullet* bullet : bullets_) {
 		delete bullet;
 	}
+
+	delete sprite2dReticle_;
 }
 
 void Player::Initialize(Model* model, uint32_t textureHandle,Vector3&position) {
@@ -18,9 +21,17 @@ void Player::Initialize(Model* model, uint32_t textureHandle,Vector3&position) {
 	worldTransform_.Initialize();
 	// シングルトンインスタンスを取得する
 	input_ = Input::GetInstance();
+	//3Dレティクルのワールドトランスフォーム初期化
+	worldTransform3DReticle_.Initialize();
+	//3Dレティクルのテクスチャ
+	//ReticletextureHandle_ = TextureManager::Load("reticle.png");
+	//レティクル用テクスチャ取得
+	uint32_t textureReticle = TextureManager::Load("reticle.png");
+	//スプライト生成
+	sprite2dReticle_ = Sprite::Create(textureReticle, {worldTransform3DReticle_.translation_.x, worldTransform3DReticle_.translation_.y}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5, 0.5});
 }
 
-void Player::Update() {
+void Player::Update(const ViewProjection& viewProjection) {
 	//デスフラグの立った弾を削除
 	bullets_.remove_if([](PlayerBullet* bullet) {
 		if (bullet->IsDead()) {
@@ -75,6 +86,35 @@ void Player::Update() {
 
 	// 行列を定数バッファに転送
 	worldTransform_.TransferMatrix();
+
+	
+	// 自機の座標から3Dレティクルのワールド座標を計算
+	// 自機から3Dレティクルへの距離
+	const float kDistancePlayerTo3DReticle = 25.0f;
+	// 自機から3Dレティクルへのオフセット(z+向き)
+	Vector3 offset = {0, 0, 1.0f};
+	// 自機のワールド行列の回転を反映
+	offset = TransformNormal(offset, worldTransform_.matWorld_);
+	// ベクトルの長さを整える
+	offset = Normalize(offset) * kDistancePlayerTo3DReticle;
+	// 3Dレティクルの座標を設定
+	worldTransform3DReticle_.translation_ = worldTransform_.translation_ + offset;
+	worldTransform3DReticle_.UpdateMatrix();
+
+	//3Dレティクルのワールド座標から2Dレティクルのスクリーン座標を計算
+	Vector3 positionReticle;
+	positionReticle.x = worldTransform3DReticle_.matWorld_.m[3][0];
+	positionReticle.y = worldTransform3DReticle_.matWorld_.m[3][1];
+	positionReticle.z = worldTransform3DReticle_.matWorld_.m[3][2];
+	//ビューポート行列
+	Matrix4x4 matViewport = MakeViewportMatrix(0, 0, WinApp::kWindowWidth, WinApp::kWindowHeight, 0, 1);
+	//ビュー行列とプロジェクション行列、ビューポート行列を合成
+	Matrix4x4 matViewProjectionViewport = Multiply(Multiply(viewProjection.matView,viewProjection.matProjection), matViewport);
+	//ワールド→スクリーン座標変換(ここで3Dから2Dになる)
+	positionReticle = Transform(positionReticle, matViewProjectionViewport);
+	//スプライトのレティクルに座標設定
+	sprite2dReticle_->SetPosition(Vector2(positionReticle.x, positionReticle.y));
+
 	// キャラクターの座標を画面表示する処理
 	ImGui::Begin("Debug");
 	ImGui::DragFloat3("Position", &worldTransform_.translation_.x, 0.1f);
@@ -83,6 +123,9 @@ void Player::Update() {
 
 void Player::Draw(const ViewProjection& viewProjection) {
 	model_->Draw(worldTransform_, viewProjection, textureHandle_);
+
+	//3Dレティクルを描画
+	model_->Draw(worldTransform3DReticle_, viewProjection);
 
 	// 弾の描画
 	for (PlayerBullet* bullet : bullets_) {
@@ -109,8 +152,12 @@ void Player::Attack() {
 		const float kBulletSpeed = 1.0f;
 		Vector3 velocity(0, 0, kBulletSpeed);
 
+		//自機から照準オブジェクトへのベクトル
+		velocity = Subtract(worldTransform3DReticle_.translation_, worldTransform_.translation_);
+		velocity = Normalize(velocity) * kBulletSpeed;
+
 		//速度ベクトルを自機の向きに合わせて回転させる
-		velocity = TransformNormal(velocity,worldTransform_.matWorld_);
+	     velocity = TransformNormal(velocity,worldTransform_.matWorld_);
 
 		// 弾を生成し、初期化
 		PlayerBullet* newBullet = new PlayerBullet();
@@ -132,6 +179,9 @@ void Player::SetParent(const WorldTransform* parent) {
 	//親子関係を結ぶ
 	worldTransform_.parent_ = parent;
 }
+
+//UI描画
+void Player::DrawUI() { sprite2dReticle_->Draw(); }
 
 //ワールド座標を取得
 Vector3 Player::GetWorldPosition() {

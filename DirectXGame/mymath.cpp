@@ -71,8 +71,77 @@ Vector3 Add(const Vector3& v1, const Vector3& v2) { return Vector3(v1.x + v2.x, 
 // 減算
 Vector3 Subtract(const Vector3& v1, const Vector3& v2) { return {v1.x - v2.x, v1.y - v2.y, v1.z - v2.z}; }
 
+// Matrixの減算
+Matrix4x4 Subtract(const Matrix4x4& m1, const Matrix4x4& m2) {
+	Matrix4x4 result;
+	for (int i = 0; i < 4; ++i) {
+		for (int j = 0; j < 4; ++j) {
+			result.m[i][j] = m1.m[i][j] - m2.m[i][j];
+		}
+	}
+	return result;
+}
+
+//MatrixからVectorの減算
+Matrix4x4 Subtract(const Matrix4x4& m, const Vector3& v) {
+	Matrix4x4 result;
+
+	for (int i = 0; i < 3; ++i) { 
+		result.m[i][0] = m.m[i][0] - v.x;
+		result.m[i][1] = m.m[i][1] - v.y;
+		result.m[i][2] = m.m[i][2] - v.z;
+		result.m[i][3] = m.m[i][3]; 
+	}
+
+	for (int j = 0; j < 4; ++j) {
+		result.m[3][j] = m.m[3][j]; 
+	}
+
+	return result;
+}
+
+// VectorからMatrixの減算
+Matrix4x4 Subtract(const Vector3& v, const Matrix4x4& m) {
+	Matrix4x4 result;
+
+	for (int i = 0; i < 3; ++i) { 
+		result.m[i][0] = v.x - m.m[i][0];
+		result.m[i][1] = v.y - m.m[i][1];
+		result.m[i][2] = v.z - m.m[i][2];
+		result.m[i][3] = -m.m[i][3];
+	}
+
+	for (int j = 0; j < 4; ++j) {
+		result.m[3][j] = -m.m[3][j];
+	}
+
+	return result;
+}
+
+
 // スカラー倍
 Vector3 Multiply(float scalar, const Vector3& v) { return {scalar * v.x, scalar * v.y, scalar * v.z}; }
+
+// Vector同士
+Vector3 Multiply(const Vector3& v1, const Vector3& v2) { return {v1.x * v2.x, v1.y * v2.y, v1.z * v2.z}; }
+
+// VectorとMatrixの積
+Vector3 Multiply(const Vector3& v, const Matrix4x4& m) {
+	return {
+	    v.x * m.m[0][0] + v.y * m.m[1][0] + v.z * m.m[2][0] + m.m[3][0], v.x * m.m[0][1] + v.y * m.m[1][1] + v.z * m.m[2][1] + m.m[3][1],
+	    v.x * m.m[0][2] + v.y * m.m[1][2] + v.z * m.m[2][2] + m.m[3][2]};
+}
+
+// Matrix同士
+Matrix4x4 Multiply(const Matrix4x4& m1, const Matrix4x4& m2) {
+	Matrix4x4 result;
+	for (int i = 0; i < 4; ++i) {
+		for (int j = 0; j < 4; ++j) {
+			result.m[i][j] = m1.m[i][0] * m2.m[0][j] + m1.m[i][1] * m2.m[1][j] + m1.m[i][2] * m2.m[2][j] + m1.m[i][3] * m2.m[3][j];
+		}
+	}
+	return result;
+}
 
 // 内積
 float Dot(const Vector3& v1, const Vector3& v2) { return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z; }
@@ -179,17 +248,6 @@ Vector3 Normalize(const Vector3& v) {
 		return {0.0f, 0.0f, 0.0f};
 }
 
-Matrix4x4 Multiply(const Matrix4x4& m1, const Matrix4x4& m2) {
-	Matrix4x4 result{};
-	for (int row = 0; row < 4; ++row) {
-		for (int column = 0; column < 4; ++column) {
-			for (int i = 0; i < 4; ++i) {
-				result.m[row][column] += m1.m[row][i] * m2.m[i][column];
-			}
-		}
-	}
-	return result;
-}
 // 平行移動行列
 Matrix4x4 MakeTranslateMatrix(const Vector3& translate) {
 	Matrix4x4 translateMatrix;
@@ -328,6 +386,27 @@ Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Vector3& rotate, const Ve
 	Matrix4x4 affineMatrix = Multiply(Multiply(scaleMatrix, rotateMatrix), translateMatrix);
 
 	return affineMatrix;
+}
+
+Matrix4x4 MakeViewportMatrix(float left, float top, float width, float height, float minDepth, float maxDepth) {
+	Matrix4x4 viewportMatrix;
+	viewportMatrix.m[0][0] = width / 2.0f;
+	viewportMatrix.m[0][1] = 0;
+	viewportMatrix.m[0][2] = 0;
+	viewportMatrix.m[0][3] = 0;
+	viewportMatrix.m[1][0] = 0;
+	viewportMatrix.m[1][1] = -height / 2.0f;
+	viewportMatrix.m[1][2] = 0;
+	viewportMatrix.m[1][3] = 0;
+	viewportMatrix.m[2][0] = 0;
+	viewportMatrix.m[2][1] = 0;
+	viewportMatrix.m[2][2] = maxDepth - minDepth;
+	viewportMatrix.m[2][3] = 0;
+	viewportMatrix.m[3][0] = left + width / 2.0f;
+	viewportMatrix.m[3][1] = top + height / 2.0f;
+	viewportMatrix.m[3][2] = minDepth;
+	viewportMatrix.m[3][3] = 1;
+	return viewportMatrix;
 }
 
 //ベクトル変換

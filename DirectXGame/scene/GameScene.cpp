@@ -41,6 +41,8 @@ void GameScene::Initialize() {
 	modelSkydome_ = Model::CreateFromOBJ("sky", true);
 	// 3Dモデルデータの生成
 	model_ = Model::Create();
+	//レティクルのテクスチャ
+	TextureManager::Load("reticle.png");
 	// ビュープロジェクションのfarZを適度に大きい値に変更する
 	// viewProjection_.farZ = 1000;
 	//  ビュープロジェクションの初期化
@@ -67,14 +69,13 @@ void GameScene::Initialize() {
 	railcamera_->Initialize(railPosition, railRotation);
 	// 自キャラとレールカメラの親子関係を結ぶ
 	player_->SetParent(&railcamera_->GetWorldtransform());
-	//EnemyPop(Vector3(0.0f, 0.0f, 50.0f));
 	LoadEnemyPopData();
 }
 
 void GameScene::Update() {
 	UpdateEnemyPopCommands();
 	// 自キャラの更新
-	player_->Update();
+	player_->Update(viewProjection_);
 
 	// 敵の更新
 	for (Enemy* enemy : enemys_) {
@@ -190,6 +191,7 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに前景スプライトの描画処理を追加できる
 	/// </summary>
+	player_->DrawUI();
 
 	// スプライト描画後処理
 	Sprite::PostDraw();

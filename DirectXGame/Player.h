@@ -5,6 +5,8 @@
 #include "mymath.h"
 #include "ImGuiManager.h"
 #include "PlayerBullet.h"
+#include "Sprite.h"
+#include "ViewProjection.h"
 #include <list>
 #pragma once
 /// <summary>
@@ -25,7 +27,7 @@ public:
 	/// <summary>
 	/// 更新
 	/// </summary>
-	void Update();
+	void Update( const ViewProjection&viewProjection);
 
 	/// <summary>
 	/// 描画
@@ -43,6 +45,9 @@ public:
 
 	void SetParent(const WorldTransform* parent);
 
+	//UI描画関数
+	void DrawUI();
+
 	//ワールド座標を取得
 	Vector3 GetWorldPosition();
 
@@ -56,8 +61,14 @@ private:
 	Model* model_ = nullptr;
 	//テクスチャハンドル
 	uint32_t textureHandle_ = 0u;
+	//レティクルテクスチャハンドル
+	//uint32_t ReticletextureHandle_ = 0u;
 	//キーボード入力
 	Input* input_ = nullptr;
 	//弾
 	std::list<PlayerBullet*> bullets_;
+	//3Dレティクル用ワールドトランスフォーム
+	WorldTransform worldTransform3DReticle_;
+	//2Dレティクル用スプライト
+	Sprite* sprite2dReticle_ = nullptr;
 };

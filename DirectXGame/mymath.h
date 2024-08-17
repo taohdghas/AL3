@@ -29,8 +29,26 @@ double easeInOutSine(double x);
 Vector3 Add(const Vector3& v1, const Vector3& v2);
 Vector3 Subtract(const Vector3& v1, const Vector3& v2);
 
+//Matrixの減算
+Matrix4x4 Subtract(const Matrix4x4& m1, const Matrix4x4& m2);
+
+//MatrixからVectorの減算
+Matrix4x4 Subtract(const Matrix4x4& m, const Vector3& v);
+
+//VectorからMatrixの減算
+Matrix4x4 Subtract(const Vector3& v, const Matrix4x4& m);
+
 // スカラー倍
 Vector3 Multiply(float scalar, const Vector3& v);
+
+//Vector同士
+Vector3 Multiply(const Vector3& v1, const Vector3& v2);
+
+// VectorとMatrixの積
+Vector3 Multiply(const Vector3& v, const Matrix4x4& m);
+
+//Matrix同士
+Matrix4x4 Multiply(const Matrix4x4& m1, const Matrix4x4& m2);
 
 // 内積
 float Dot(const Vector3& v1, const Vector3& v2);
@@ -57,9 +75,10 @@ Matrix4x4 MakeRotateYMatrix(float radian);
 // z軸回転行列
 Matrix4x4 MakeRotateZMatrix(float radian);
 
-Matrix4x4 Multiply(const Matrix4x4& m1, const Matrix4x4& m2);
 // アフィン変換
 Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Vector3& rotate, const Vector3& translate);
+
+Matrix4x4 MakeViewportMatrix(float left, float top, float width, float height, float minDepth, float maxDepth);
 
 //ベクトル変換
 Vector3 TransformNormal(const Vector3& v, const Matrix4x4& m);
