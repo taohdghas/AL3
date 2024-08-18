@@ -1,11 +1,11 @@
 #include "GameScene.h"
 #include "TextureManager.h"
+#include "AxisIndicator.h"
 #include <cassert>
 
 GameScene::GameScene() {}
 
-GameScene::~GameScene() {
-}
+GameScene::~GameScene() { delete debugCamera_; }
 
 void GameScene::Initialize() {
 
@@ -15,18 +15,60 @@ void GameScene::Initialize() {
 	textureHandle_ = TextureManager::Load("mario.png");
 	//3Dモデルの生成
 	model_.reset(Model::Create());
+	//天球のモデル生成
+	modelSkydome_.reset(Model::CreateFromOBJ("skydome", true));
+	//地面のモデル生成
+	modelGround_.reset(Model::CreateFromOBJ("ground", true));
 	viewProjection_.Initialize();
 	worldTransform_.Initialize();
+	// デバックカメラの生成
+	debugCamera_ = new DebugCamera(1280, 720);
+	// 軸方向表示の表示を有効にする
+	AxisIndicator::GetInstance()->SetVisible(true);
+	// 軸方向表示が参照するビュープロジェクションを指定する(アドレス渡し)
+	AxisIndicator::GetInstance()->SetTargetViewProjection(&viewProjection_);
 	//自キャラの生成
 	player_ = std::make_unique<Player>();
 	//自キャラの初期化
 	player_->Initialize(model_.get(), textureHandle_,&viewProjection_);
+	//天球の生成
+	skydome_ = std::make_unique<Skydome>();
+	//天球の初期化
+	skydome_->Initialize(modelSkydome_.get(), &viewProjection_);
+	//地面の生成
+	ground_ = std::make_unique<Ground>();
+	//地面の初期化
+	ground_->Initialize(modelGround_.get(), &viewProjection_);
 }
 
 void GameScene::Update() {
 
 	//自キャラの更新
 	player_->Update();
+	//天球の更新
+	skydome_->Update();
+
+		// カメラの処理
+	if (isDebugCameraActive_) {
+		// デバックカメラの更新
+		debugCamera_->Update();
+		viewProjection_.matView = debugCamera_->GetViewProjection().matView;
+		viewProjection_.matProjection = debugCamera_->GetViewProjection().matProjection;
+		// ビュープロジェクション行列の転送
+		viewProjection_.TransferMatrix();
+	} else {
+		// ビュープロジェクション行列の更新と転送
+		viewProjection_.UpdateMatrix();
+	}
+#ifdef _DEBUG
+	if (input_->TriggerKey(DIK_Q)) {
+		if (!isDebugCameraActive_) {
+			isDebugCameraActive_ = true;
+		} else if (isDebugCameraActive_) {
+			isDebugCameraActive_ = false;
+		}
+	}
+#endif
 }
 
 void GameScene::Draw() {
@@ -57,6 +99,10 @@ void GameScene::Draw() {
 	/// </summary>
 	// 自キャラの描画
 	player_->Draw();
+	// 天球の描画
+	skydome_->Draw(viewProjection_);
+	//地面の描画
+	ground_->Draw(viewProjection_);
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();
 #pragma endregion

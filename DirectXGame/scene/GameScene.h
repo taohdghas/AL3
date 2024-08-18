@@ -8,6 +8,9 @@
 #include "ViewProjection.h"
 #include "WorldTransform.h"
 #include "Player.h"
+#include "Skydome.h"
+#include "DebugCamera.h"
+#include "Ground.h"
 #include <memory>
 
 /// <summary>
@@ -50,8 +53,20 @@ private: // メンバ変数
 	std::unique_ptr<Model> model_;
 	WorldTransform worldTransform_;
 	ViewProjection viewProjection_;
+	// デバックカメラ有効
+	bool isDebugCameraActive_ = false;
+	// デバックカメラ
+	DebugCamera* debugCamera_ = nullptr;
 	//自キャラ
 	std::unique_ptr<Player> player_;
+	//天球
+	std::unique_ptr<Skydome> skydome_;
+	//天球モデル
+	std::unique_ptr<Model> modelSkydome_;
+	//地面
+	std::unique_ptr<Ground> ground_;
+	//地面モデル
+	std::unique_ptr<Model> modelGround_;
 	/// <summary>
 	/// ゲームシーン用
 	/// </summary>
