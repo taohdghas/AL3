@@ -1,6 +1,7 @@
 #pragma once
 #include "Model.h"
 #include "WorldTransform.h"
+#include "input.h"
 
 class Player {
 public:
@@ -18,6 +19,8 @@ public:
 	/// 描画
 	/// </summary>
 	void Draw();
+
+	void Move();
 
 private:
 	//ワールド変換データ

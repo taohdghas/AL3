@@ -21,3 +21,8 @@ void Player::Draw() {
 	//3Dモデルを描画 
 	model_->Draw(worldTransform_,*viewProjection_,textureHandle_);
 }
+
+void Player::Move() {
+	//左右移動
+	
+}
