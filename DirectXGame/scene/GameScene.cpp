@@ -39,6 +39,12 @@ void GameScene::Initialize() {
 	ground_ = std::make_unique<Ground>();
 	//地面の初期化
 	ground_->Initialize(modelGround_.get(), &viewProjection_);
+	//追従カメラの生成
+	followcamera_ = std::make_unique<FollowCamera>();
+	//追従カメラの初期化
+	followcamera_->Initialize();
+	//自キャラのワールドトランスフォームを追従カメラにセット
+	followcamera_->SetTarget(&player_->GetWorldTransform());
 }
 
 void GameScene::Update() {
@@ -48,6 +54,11 @@ void GameScene::Update() {
 	//天球の更新
 	skydome_->Update();
 
+	//追従カメラの更新
+	followcamera_->Update();
+	viewProjection_.matView = followcamera_.get()->GetViewProjection().matView;
+	viewProjection_.matProjection = followcamera_.get()->GetViewProjection().matProjection;
+#ifdef _DEBUG
 		// カメラの処理
 	if (isDebugCameraActive_) {
 		// デバックカメラの更新
@@ -60,7 +71,6 @@ void GameScene::Update() {
 		// ビュープロジェクション行列の更新と転送
 		viewProjection_.UpdateMatrix();
 	}
-#ifdef _DEBUG
 	if (input_->TriggerKey(DIK_Q)) {
 		if (!isDebugCameraActive_) {
 			isDebugCameraActive_ = true;

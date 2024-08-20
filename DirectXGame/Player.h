@@ -22,6 +22,8 @@ public:
 
 	void Move();
 
+	const WorldTransform& GetWorldTransform() { return worldTransform_; }
+
 private:
 	//ワールド変換データ
 	WorldTransform worldTransform_;

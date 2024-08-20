@@ -33,14 +33,14 @@ void Player::Move() {
 		const float speed = 0.3f;
 		//移動量
 		Vector3 move = {
-			(float)joyState.Gamepad.sThumbLX / SHRT_MAX, 
+			(float)joyState.Gamepad.sThumbLX / SHRT_MAX,0.0f, 
 			(float)joyState.Gamepad.sThumbLY / SHRT_MAX};
 		//移動量に速さを反映
 		move = Normalize(move) * speed;
 
 		//移動
 		worldTransform_.translation_.x += move.x;
-		worldTransform_.translation_.y += move.y;
+		worldTransform_.translation_.z += move.z;
 	}
 
 }
