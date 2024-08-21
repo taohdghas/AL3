@@ -5,7 +5,16 @@
 
 GameScene::GameScene() {}
 
-GameScene::~GameScene() { delete debugCamera_; }
+GameScene::~GameScene() { 
+	delete debugCamera_; 
+	//ブロックの解放
+	for (std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformBlocks_) {
+		for (WorldTransform* worldTransformBlock : worldTransformBlockLine) {
+			delete worldTransformBlock;
+		}
+	}
+	worldTransformBlocks_.clear();
+}
 
 void GameScene::Initialize() {
 
@@ -18,7 +27,9 @@ void GameScene::Initialize() {
 	//天球のモデル生成
 	modelSkydome_.reset(Model::CreateFromOBJ("skydome", true));
 	//地面のモデル生成
-	modelGround_.reset(Model::CreateFromOBJ("ground", true));
+//	modelGround_.reset(Model::CreateFromOBJ("ground", true));
+	//ブロックモデルの生成
+	modelBlock_.reset(Model::CreateFromOBJ("cube", true));
 	viewProjection_.Initialize();
 	worldTransform_.Initialize();
 	// デバックカメラの生成
@@ -35,10 +46,18 @@ void GameScene::Initialize() {
 	skydome_ = std::make_unique<Skydome>();
 	//天球の初期化
 	skydome_->Initialize(modelSkydome_.get(), &viewProjection_);
+	/*
 	//地面の生成
 	ground_ = std::make_unique<Ground>();
 	//地面の初期化
 	ground_->Initialize(modelGround_.get(), &viewProjection_);
+	*/
+	//マップチップフィールドの生成
+	mapchipField_ = std::make_unique<MapChipField>();
+	//マップチップ読み込み
+	mapchipField_->LoadMapChipCsv("Resources/map.csv");
+	//ブロック生成
+	GenerateBlocks();
 }
 
 void GameScene::Update() {
@@ -47,6 +66,16 @@ void GameScene::Update() {
 	player_->Update();
 	//天球の更新
 	skydome_->Update();
+
+	//ブロックの更新
+	for (std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformBlocks_) {
+		for (WorldTransform* worldTransformBlock : worldTransformBlockLine) {
+			if (!worldTransformBlock)
+				continue;
+			// アフィン変換行列の作成
+			worldTransformBlock->UpdateMatrix();
+		}
+	}
 
 		// カメラの処理
 	if (isDebugCameraActive_) {
@@ -102,7 +131,15 @@ void GameScene::Draw() {
 	// 天球の描画
 	skydome_->Draw(viewProjection_);
 	//地面の描画
-	ground_->Draw(viewProjection_);
+	//ground_->Draw(viewProjection_);
+	//ブロックの描画
+	for (std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformBlocks_) {
+		for (WorldTransform* worldTransformBlock : worldTransformBlockLine) {
+			if (!worldTransformBlock)
+				continue;
+			modelBlock_->Draw(*worldTransformBlock, viewProjection_);
+		}
+	}
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();
 #pragma endregion
@@ -120,3 +157,29 @@ void GameScene::Draw() {
 
 #pragma endregion
 }
+
+//ブロックの生成
+void GameScene::GenerateBlocks() {
+	// 要素数
+	uint32_t numBlockVirtical = mapchipField_->GetNumBlockVirtical();
+	uint32_t numBlockHorizontal = mapchipField_->GetNumBlockHorizontal();
+	// 要素数を変更する
+	// 列数を設定(縦方向のブロック数)
+	worldTransformBlocks_.resize(20);
+	for (uint32_t i = 0; i < 20; ++i) {
+		// 一列の要素数を設定(横ブロック数)
+		worldTransformBlocks_[i].resize(numBlockHorizontal);
+	}
+	// ブロックの生成
+	for (uint32_t i = 0; i < numBlockVirtical; ++i) {
+		for (uint32_t j = 0; j < numBlockHorizontal; ++j) {
+			if (mapchipField_->GetMapChipTypeByIndex(j, i) == MapChipType::kBlock) {
+				WorldTransform* worldTransform = new WorldTransform();
+				worldTransform->Initialize();
+				worldTransformBlocks_[i][j] = worldTransform;
+				worldTransformBlocks_[i][j]->translation_ = mapchipField_->GetMapChipPositionByIndex(j, i);
+			}
+		}
+	}
+}
+

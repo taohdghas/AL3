@@ -12,6 +12,8 @@
 #include "DebugCamera.h"
 #include "Ground.h"
 #include <memory>
+#include <vector>
+#include "MapChipField.h"
 
 /// <summary>
 /// ゲームシーン
@@ -44,12 +46,15 @@ public: // メンバ関数
 	/// </summary>
 	void Draw();
 
+	//ブロック生成
+	void GenerateBlocks();
+
 private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
 	Input* input_ = nullptr;
 	Audio* audio_ = nullptr;
 	uint32_t textureHandle_ = 0;
-	//モデル
+	// モデル
 	std::unique_ptr<Model> model_;
 	WorldTransform worldTransform_;
 	ViewProjection viewProjection_;
@@ -57,16 +62,24 @@ private: // メンバ変数
 	bool isDebugCameraActive_ = false;
 	// デバックカメラ
 	DebugCamera* debugCamera_ = nullptr;
-	//自キャラ
+	// 自キャラ
 	std::unique_ptr<Player> player_;
-	//天球
+	// 天球
 	std::unique_ptr<Skydome> skydome_;
-	//天球モデル
+	// 天球モデル
 	std::unique_ptr<Model> modelSkydome_;
+	/*
 	//地面
 	std::unique_ptr<Ground> ground_;
 	//地面モデル
 	std::unique_ptr<Model> modelGround_;
+	*/
+	//ブロックモデル
+	std::unique_ptr<Model> modelBlock_;
+	//ブロック配列
+	std::vector<std::vector<WorldTransform*>> worldTransformBlocks_;
+	//マップチップフィールド
+	std::unique_ptr<MapChipField> mapchipField_;
 	/// <summary>
 	/// ゲームシーン用
 	/// </summary>
