@@ -14,6 +14,7 @@
 #include <memory>
 #include <vector>
 #include "MapChipField.h"
+#include "CameraContoroller.h"
 
 /// <summary>
 /// ゲームシーン
@@ -80,6 +81,9 @@ private: // メンバ変数
 	std::vector<std::vector<WorldTransform*>> worldTransformBlocks_;
 	//マップチップフィールド
 	std::unique_ptr<MapChipField> mapchipField_;
+	//カメラコントローラ
+	std::unique_ptr<CameraContoroller> cameraContoroller_;
+	Rect movableArea_;
 	/// <summary>
 	/// ゲームシーン用
 	/// </summary>

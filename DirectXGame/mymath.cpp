@@ -71,6 +71,19 @@ Vector3 Add(const Vector3& v1, const Vector3& v2) { return Vector3(v1.x + v2.x, 
 // 減算
 Vector3 Subtract(const Vector3& v1, const Vector3& v2) { return {v1.x - v2.x, v1.y - v2.y, v1.z - v2.z}; }
 
+Vector3 Lerp(const Vector3& v1, const Vector3& v2, float t) {
+	if (t <= 0.0f) {
+		return v1;
+	} else if (t >= 1.0f) {
+		return v2;
+	}
+	float x = v1.x + t * (v2.x - v1.x);
+	float y = v1.y + t * (v2.y - v1.y);
+	float z = v1.z + t * (v2.z - v1.z);
+
+	return {x, y, z};
+}
+
 // Matrixの減算
 Matrix4x4 Subtract(const Matrix4x4& m1, const Matrix4x4& m2) {
 	Matrix4x4 result;

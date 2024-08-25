@@ -1,6 +1,7 @@
 #include "GameScene.h"
 #include "TextureManager.h"
 #include "AxisIndicator.h"
+#include "mymath.h"
 #include <cassert>
 
 GameScene::GameScene() {}
@@ -38,10 +39,19 @@ void GameScene::Initialize() {
 	AxisIndicator::GetInstance()->SetVisible(true);
 	// 軸方向表示が参照するビュープロジェクションを指定する(アドレス渡し)
 	AxisIndicator::GetInstance()->SetTargetViewProjection(&viewProjection_);
+	// マップチップフィールドの生成
+	mapchipField_ = std::make_unique<MapChipField>();
+	// マップチップ読み込み
+	mapchipField_->LoadMapChipCsv("Resources/map.csv");
+	//ブロックの基準位置
+	Vector3 basePosition(0.0f, 0.0f, 0.0f);
+	//座標をマップチップ番号で指定
+	Vector3 playerPosition =mapchipField_->GetMapChipPositionByIndex(1,18);
 	//自キャラの生成
 	player_ = std::make_unique<Player>();
 	//自キャラの初期化
-	player_->Initialize(model_.get(), textureHandle_,&viewProjection_);
+	player_->Initialize(model_.get(),&viewProjection_,playerPosition);
+	player_->SetMapChipField(mapchipField_.get());
 	//天球の生成
 	skydome_ = std::make_unique<Skydome>();
 	//天球の初期化
@@ -52,10 +62,15 @@ void GameScene::Initialize() {
 	//地面の初期化
 	ground_->Initialize(modelGround_.get(), &viewProjection_);
 	*/
-	//マップチップフィールドの生成
-	mapchipField_ = std::make_unique<MapChipField>();
-	//マップチップ読み込み
-	mapchipField_->LoadMapChipCsv("Resources/map.csv");
+	//カメラコントローラの生成
+	cameraContoroller_ = std::make_unique<CameraContoroller>();
+	//カメラコントローラの初期化
+	cameraContoroller_->Initialize();
+	cameraContoroller_->SetTarget(player_.get());
+	cameraContoroller_->Reset();
+	//移動範囲指定
+	movableArea_ = {100.0f, -20.0f, 5.0f,-5.0f};
+	cameraContoroller_->SetMovableArea(movableArea_);
 	//ブロック生成
 	GenerateBlocks();
 }
@@ -66,7 +81,8 @@ void GameScene::Update() {
 	player_->Update();
 	//天球の更新
 	skydome_->Update();
-
+	//カメラコントローラの更新
+	cameraContoroller_->Update();
 	//ブロックの更新
 	for (std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformBlocks_) {
 		for (WorldTransform* worldTransformBlock : worldTransformBlockLine) {
@@ -86,8 +102,10 @@ void GameScene::Update() {
 		// ビュープロジェクション行列の転送
 		viewProjection_.TransferMatrix();
 	} else {
+		viewProjection_.matView = cameraContoroller_->GetViewProjection().matView;
+		viewProjection_.matProjection = cameraContoroller_->GetViewProjection().matProjection;
 		// ビュープロジェクション行列の更新と転送
-		viewProjection_.UpdateMatrix();
+		viewProjection_.TransferMatrix();
 	}
 #ifdef _DEBUG
 	if (input_->TriggerKey(DIK_Q)) {
@@ -160,6 +178,8 @@ void GameScene::Draw() {
 
 //ブロックの生成
 void GameScene::GenerateBlocks() {
+	//初期座標
+	Vector3 basePosition(0.0f, 0.0f, 0.0f);
 	// 要素数
 	uint32_t numBlockVirtical = mapchipField_->GetNumBlockVirtical();
 	uint32_t numBlockHorizontal = mapchipField_->GetNumBlockHorizontal();
@@ -177,7 +197,8 @@ void GameScene::GenerateBlocks() {
 				WorldTransform* worldTransform = new WorldTransform();
 				worldTransform->Initialize();
 				worldTransformBlocks_[i][j] = worldTransform;
-				worldTransformBlocks_[i][j]->translation_ = mapchipField_->GetMapChipPositionByIndex(j, i);
+				//worldTransformBlocks_[i][j]->translation_ = mapchipField_->GetMapChipPositionByIndex(j, i);
+				worldTransformBlocks_[i][j]->translation_ =  mapchipField_->GetMapChipPositionByIndex(j, i);
 			}
 		}
 	}

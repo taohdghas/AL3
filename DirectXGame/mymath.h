@@ -29,6 +29,8 @@ double easeInOutSine(double x);
 Vector3 Add(const Vector3& v1, const Vector3& v2);
 Vector3 Subtract(const Vector3& v1, const Vector3& v2);
 
+Vector3 Lerp(const Vector3& v1, const Vector3& v2,float t);
+
 // Matrixの減算
 Matrix4x4 Subtract(const Matrix4x4& m1, const Matrix4x4& m2);
 
