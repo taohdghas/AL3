@@ -102,7 +102,6 @@ void Player::Update(const ViewProjection& viewProjection) {
 	worldTransform3DReticle_.UpdateMatrix();
 
 	//3Dレティクルのワールド座標から2Dレティクルのスクリーン座標を計算
-	
 	Vector3 positionReticle;
 	positionReticle.x = worldTransform3DReticle_.matWorld_.m[3][0];
 	positionReticle.y = worldTransform3DReticle_.matWorld_.m[3][1];
