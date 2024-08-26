@@ -24,6 +24,7 @@ void GameScene::Initialize() {
 	audio_ = Audio::GetInstance();
 	textureHandle_ = TextureManager::Load("mario.png");
 	//3Dモデルの生成
+	//model_.reset(Model::CreateFromOBJ("player",true));
 	model_.reset(Model::Create());
 	//天球のモデル生成
 	modelSkydome_.reset(Model::CreateFromOBJ("skydome", true));

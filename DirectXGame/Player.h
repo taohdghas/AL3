@@ -64,6 +64,11 @@ public:
 	void ResultMove(const CollisionMapInfo& info);
     //天井に接触時の処理
 	void IsCeil(const CollisionMapInfo& info);
+	//接地状態の切り替え
+	void ChangeGround(const CollisionMapInfo& info);
+
+	void IsWall(const CollisionMapInfo& info);
+
 	const WorldTransform& GetWorldTransform() const { return worldTransform_; }
 
 	const Vector3& GetVelocity() const { return velocity_; }
@@ -81,8 +86,8 @@ private:
 	//速度
 	Vector3 velocity_ = {};
 	static inline const float kAcceleration = 0.1f;
-	static inline const float kAttenuation = 0.1f;
-	static inline const float kLimitRunSpeed = 0.5f;
+	static inline const float kAttenuation = 0.3f;
+	static inline const float kLimitRunSpeed = 1.0f;
 
 	LRDirection lrDirection_ = LRDirection::kRight;
     //旋回開始時の角度
@@ -94,16 +99,21 @@ private:
 	//接地状態フラグ
 	bool onGround_ = true;
 	//重力加速度
-	static inline const float kGravityAcceleration = -1.0f;
+	static inline const float kGravityAcceleration = 0.1f;
 	//最大落下速度
-	static inline const float kLimitFallSpeed = 1.5f;
+	static inline const float kLimitFallSpeed = 1.0f;
 	//ジャンプ初速
-	static inline const float kJumpAcceleration = 0.5f;
+	static inline const float kJumpAcceleration = 0.9f;
 	//マップチップによるフィールド
 	MapChipField* mapChipField_ = nullptr;
 	//キャラクターの当たり判定サイズ
-	static inline const float kWidth = 0.8f;
-	static inline const float kHeight = 0.8f;
+	static inline const float kWidth = 1.0f;
+	static inline const float kHeight = 1.0f;
 
-	static inline const float kBlank = 0.2f;
+	static inline const float kBlank = 1.0f;
+	//着地時の速度減衰率
+	static inline const float kAttenuationLanding = 0.1f;
+	//微小な数値
+	static inline const float kGroundHeight = 0.1f;
+	static inline const float kAttenuationWall = 0.1f;
 };
