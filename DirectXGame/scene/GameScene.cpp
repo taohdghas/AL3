@@ -38,7 +38,7 @@ void GameScene::Initialize() {
 	// 自キャラの生成(モデル)
 	modelPlayer_ = Model::CreateFromOBJ("player", true);
 	// 座標をマップチップ番号で指定
-	Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(3, 18);
+	Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(1, 18);
 	// 自キャラの初期化
 	player_->Initialize(modelPlayer_, &viewProjection_, playerPosition);
 	player_->SetMapChipField(mapChipField_);
@@ -76,7 +76,7 @@ void GameScene::Update() {
 	debugCamera_->Update();
 #ifdef _DEBUG
 	if (input_->TriggerKey(DIK_SPACE)) {
-		if (isDebugCameraActive_ == false) {
+		if (!isDebugCameraActive_) {
 			isDebugCameraActive_ = true;
 		} else {
 			isDebugCameraActive_ = false;

@@ -2,6 +2,7 @@
 #include "DebugText.h"
 #include "MapChipField.h"
 #include "mymath.h"
+#include "imgui.h"
 
 Player::Player() {}
 
@@ -41,6 +42,9 @@ void Player::Update() {
 	worldTransform_.translation_ = worldTransform_.translation_ + velocity_;
 	// 行列計算
 	worldTransform_.UpdateMatrix();
+	ImGui::Begin("debug");
+	ImGui::DragFloat3("p", &worldTransform_.translation_.x, 0.1f);
+	ImGui::End();
 }
 
 void Player::Draw() { model_->Draw(worldTransform_, *viewProjection_); }
@@ -128,7 +132,7 @@ void Player::move() {
 		// 着地
 		if (landing) {
 			// めり込み排斥
-			worldTransform_.translation_.y = 3.0f;
+			worldTransform_.translation_.y = 1.0f;
 			// 摩擦で横方向速度が減衰する
 			velocity_.x *= (1.0f - kAttenuationLanding);
 			// 下方向速度をリセット
