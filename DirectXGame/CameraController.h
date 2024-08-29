@@ -37,9 +37,9 @@ private:
 	ViewProjection* viewProjection_;
 	Player* target_ = nullptr;
 	// 追従対象とカメラの座標の差(オフセット)
-	Vector3 targetOffset_ = {0, 0, -15.0f};
+	Vector3 targetOffset_ = {0, 3, -12.0f};
 	// カメラ移動範囲
-	Rect movableArea_ = {0, 100, 0, 100};
+	Rect movableArea_ = {0, 0, 0, 0};
 	// カメラの目標座標
 	Vector3 targetpos_ = {};
 };

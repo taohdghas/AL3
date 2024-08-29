@@ -52,12 +52,21 @@ void GameScene::Initialize() {
 	// 敵モデル
 	modelEnemy_ = Model::CreateFromOBJ("enemy", true);
 	// 敵の生成
-	for (int32_t i = 0; i < 1; ++i) {
+	Vector3 enemyPositions[] = {
+	    {10.0f, 1.0f, 0.0f},
+        {30.0f, 1.0f, 0.0f},
+        {50.0f, 1.0f, 0.0f},
+        {60.0f, 1.0f, 0.0f},
+        {80.0f, 1.0f, 0.0f}
+    };
+	int32_t numEnemies = 5; 
+	for (int32_t i = 0; i < numEnemies; ++i) {
 		Enemy* newEnemy = new Enemy();
-		Vector3 enemyPosition = mapChipField_->GetMapChipPositionByIndex(10 + i * 3, 18);
-		newEnemy->Initialize(modelEnemy_, &viewProjection_, enemyPosition);
+		Vector3 enemyPosition = enemyPositions[i]; // 配列から座標を取得
+		newEnemy->Initialize(modelEnemy_, &viewProjection_, enemyPosition, mapChipField_);
 		enemies_.push_back(newEnemy);
 	}
+
 
 	// パーティクルモデル
 	modelParticles_ = Model::CreateFromOBJ("deathParticle", true);
@@ -113,6 +122,18 @@ void GameScene::Update() {
 		for (Enemy* enemy : enemies_) {
 			enemy->Update();
 		}
+		// 削除フラグが立っている敵を削除する処理を追加
+		enemies_.erase(
+		    std::remove_if(
+		        enemies_.begin(), enemies_.end(),
+		        [](Enemy* enemy) {
+			        if (enemy->IsDead()) {
+				        delete enemy;
+				        return true;
+			        }
+			        return false;
+		        }),
+		    enemies_.end());
 		// カメラコントローラの更新
 		cameraController_->Update();
 		// カメラの処理

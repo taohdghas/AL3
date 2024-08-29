@@ -96,7 +96,7 @@ private:
 	MapChipField* mapChipField_;
 	//カメラコントローラ
 	CameraController* cameraController_ = nullptr;
-	CameraController::Rect movableArea = {0, 100, 0, 100};
+	CameraController::Rect movableArea = {8, 100, 0, 100};
 
 	//ゲームの現在フェーズ(変数)
 	Phase phase_;
