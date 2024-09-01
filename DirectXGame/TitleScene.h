@@ -4,9 +4,8 @@
 #include "WorldTransform.h"
 #include "DirectXCommon.h"
 #include "Input.h"
-    /// <summary>
-/// 
-/// </summary>
+
+
 class TitleScene {
 public:
 	TitleScene();
@@ -38,4 +37,5 @@ private:
 	WorldTransform titleWorldTransform_;
 	ViewProjection viewProjection_;
 	Model* titlemodel_ = nullptr;
+	Model* spacemodel_ = nullptr;
 };

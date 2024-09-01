@@ -51,6 +51,8 @@ private:
 	bool isDead_ = false;
 	// 速度
 	Vector3 velocity_ = {};
+	Vector3 direction_;
+	int facingDirection_;
 	// ワールド変換データ
 	WorldTransform worldTransform_;
 	// モデル

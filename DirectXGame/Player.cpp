@@ -2,7 +2,9 @@
 #include "DebugText.h"
 #include "MapChipField.h"
 #include "mymath.h"
-
+#ifdef _DEBUG
+#include "imgui.h"
+#endif
 Player::Player() {}
 
 Player::~Player() {}
@@ -46,6 +48,11 @@ void Player::Update() {
 	worldTransform_.translation_ = worldTransform_.translation_ + velocity_;
 	// 行列計算
 	worldTransform_.UpdateMatrix();
+	#ifdef _DEBUG
+	ImGui::Begin("debug");
+	ImGui::DragFloat3("p", &worldTransform_.translation_.x, 0.1f);
+	ImGui::End();
+    #endif
 }
 
 void Player::Draw() { model_->Draw(worldTransform_, *viewProjection_); }

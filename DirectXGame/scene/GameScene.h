@@ -96,15 +96,16 @@ private:
 	MapChipField* mapChipField_;
 	//カメラコントローラ
 	CameraController* cameraController_ = nullptr;
-	CameraController::Rect movableArea = {8, 100, 0, 100};
+	CameraController::Rect movableArea = {10, 100, 4, 100};  
 
 	//ゲームの現在フェーズ(変数)
 	Phase phase_;
 
 	//終了フラグ
 	bool finished_ = false;
-
-	/// <summary>
-	/// ゲームシーン用
-	/// </summary>
+	
+	bool enemySpawned_ = false;
+	bool enemySpawned_2 = false;
+	bool enemySpawned_3 = false;
+	bool enemySpawned_4 = false;
 };

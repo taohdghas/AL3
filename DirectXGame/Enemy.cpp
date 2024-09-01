@@ -1,4 +1,7 @@
 #include "Enemy.h"
+#ifdef _DEBUG
+#include "imgui.h"
+#endif
 #include "mymath.h"
 #include <numbers>
 
@@ -6,7 +9,7 @@ Enemy::Enemy() {}
 
 Enemy::~Enemy() {}
 
-void Enemy::Initialize(Model* model, ViewProjection* viewProjection, const Vector3& position, MapChipField* mapChipField) { 
+void Enemy::Initialize(Model* model, ViewProjection* viewProjection, const Vector3& position, MapChipField* mapChipField) {
 	model_ = model;
 	viewProjection_ = viewProjection;
 	worldTransform_.Initialize();
@@ -22,25 +25,28 @@ void Enemy::Update() {
 	worldTransform_.translation_.x += velocity_.x;
 	worldTransform_.translation_.y += velocity_.y;
 	CheckMapCollision();
-	//高さが一定以下に鳴ったら削除フラグオン
+	// 高さが一定以下に鳴ったら削除フラグオン
 	if (worldTransform_.translation_.y < -10.0f) {
 		isDead_ = true;
 	}
 	// タイマーを加算
 	walkTimer_ += 1.0f / 60.0f;
-    //回転アニメーション
+	// 回転アニメーション
 	float param = std::sin(2.0f * std::numbers::pi_v<float> * walkTimer_ / kWalklMotionTime);
 	float radian = kWalkMotionAngleStart + kWalkMotionAngleEnd * (param + 1.0f) / 2.0f;
 	worldTransform_.rotation_.z = radian * (std::numbers::pi_v<float> / 180.0f);
-	// 行列計算                 
+	// 行列計算
 	worldTransform_.UpdateMatrix();
+#ifdef _DEBUG
+	ImGui::Begin("debug");
+	ImGui::DragFloat3("p", &worldTransform_.rotation_.x, 0.1f);
+	ImGui::End();
+#endif
 }
 void Enemy::Draw() { model_->Draw(worldTransform_, *viewProjection_); }
 
-//衝突応答
-void Enemy::OnCollision(const Player* player) { 
-	(void)player;
-}
+// 衝突応答
+void Enemy::OnCollision(const Player* player) { (void)player; }
 void Enemy::CheckMapCollision() {
 	// 現在の位置を取得
 	Vector3 currentPosition = GetWorldPosition();
@@ -60,7 +66,8 @@ void Enemy::CheckMapCollision() {
 	if (chipType == MapChipType::kBlock) {
 		// 衝突応答の処理（例えば、逆方向に移動するなど）
 		velocity_.x = -velocity_.x;
-		worldTransform_.translation_.x += velocity_.x; // 衝突後に位置を少し戻す
+		worldTransform_.translation_.x += velocity_.x;
+		worldTransform_.rotation_.y += 160.0f;
 	}
 
 	// 敵の下の位置を確認
@@ -89,7 +96,7 @@ void Enemy::CheckMapCollision() {
 	}
 }
 
-//ワールド座標を取得
+// ワールド座標を取得
 Vector3 Enemy::GetWorldPosition() {
 	// ワールド座標を入れる変数
 	Vector3 worldPos;
@@ -101,8 +108,8 @@ Vector3 Enemy::GetWorldPosition() {
 	return worldPos;
 }
 
-//AABB取得関数
-AABB Enemy::GetAABB() { 
+// AABB取得関数
+AABB Enemy::GetAABB() {
 	Vector3 worldPos = GetWorldPosition();
 
 	AABB aabb;
@@ -111,4 +118,4 @@ AABB Enemy::GetAABB() {
 	aabb.max = {worldPos.x + kWidth / 2.0f, worldPos.y + kHeight / 2.0f, worldPos.z + kWidth / 2.0f};
 
 	return aabb;
- }
+}

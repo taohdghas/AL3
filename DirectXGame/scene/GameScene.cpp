@@ -44,7 +44,7 @@ void GameScene::Initialize() {
 	// 自キャラの生成(モデル)
 	modelPlayer_ = Model::CreateFromOBJ("player", true);
 	// 座標をマップチップ番号で指定
-	Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(3, 18);
+	Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(3, 17);
 	// 自キャラの初期化
 	player_->Initialize(modelPlayer_, &viewProjection_, playerPosition);
 	player_->SetMapChipField(mapChipField_);
@@ -53,11 +53,11 @@ void GameScene::Initialize() {
 	modelEnemy_ = Model::CreateFromOBJ("enemy", true);
 	// 敵の生成
 	Vector3 enemyPositions[] = {
-	    {10.0f, 1.0f, 0.0f},
-        {30.0f, 1.0f, 0.0f},
-        {50.0f, 1.0f, 0.0f},
-        {60.0f, 1.0f, 0.0f},
-        {80.0f, 1.0f, 0.0f}
+	    {24.0f, 1.0f, 0.0f},
+        {30.0f, -21.0f, 0.0f},
+        {50.0f, -21.0f, 0.0f},
+        {60.0f, -21.0f, 0.0f},
+        {80.0f, -21.0f, 0.0f}
     };
 	int32_t numEnemies = 5; 
 	for (int32_t i = 0; i < numEnemies; ++i) {
@@ -91,10 +91,6 @@ void GameScene::Initialize() {
 
 	// ゲームプレイフェーズから開始
 	phase_ = Phase::kPlay;
-	/*
-	CameraController::Rect cameraArea = {12.0f, 100 - 12.0f, 6.0f, 6.0f};
-	cameraController_->SetMovableArea(cameraArea);
-	*/
 }
 
 void GameScene::Update() {
@@ -118,6 +114,44 @@ void GameScene::Update() {
 		skydome_->Update();
 		// 自キャラの更新
 		player_->Update();
+		// プレイヤーの位置を取得
+		Vector3 playerPosition = player_->GetWorldPosition();
+		if (playerPosition.x >= 100.0f) {
+			finished_ = true; 
+		}
+		// プレイヤーが特定の位置に来たかをチェック
+		if (!enemySpawned_ && playerPosition.x > 20.0f && playerPosition.x < 25.0f && playerPosition.y > 12.5f && playerPosition.y < 16.0f) {
+			// 新しい敵を生成
+			Enemy* newEnemy = new Enemy();
+			Vector3 enemySpawnPosition = {26.0f, 18.0f, 0.0f}; // スポーン位置を指定
+			newEnemy->Initialize(modelEnemy_, &viewProjection_, enemySpawnPosition, mapChipField_);
+			enemies_.push_back(newEnemy);
+			enemySpawned_ = true;
+		}
+		if (!enemySpawned_2 && playerPosition.x > 50.0f && playerPosition.x < 52.0f) {
+			// 新しい敵を生成
+			Enemy* newEnemy = new Enemy();
+			Vector3 enemySpawnPosition = {65.0f, 15.0f, 0.0f}; // スポーン位置を指定
+			newEnemy->Initialize(modelEnemy_, &viewProjection_, enemySpawnPosition, mapChipField_);
+			enemies_.push_back(newEnemy);
+			enemySpawned_2 = true;
+		}
+		if (!enemySpawned_3 && playerPosition.x > 85.0f && playerPosition.x < 90.0f) {
+			// 新しい敵を生成
+			Enemy* newEnemy = new Enemy();
+			Vector3 enemySpawnPosition = {89.0f, 11.0f, 0.0f}; // スポーン位置を指定
+			newEnemy->Initialize(modelEnemy_, &viewProjection_, enemySpawnPosition, mapChipField_);
+			enemies_.push_back(newEnemy);
+			enemySpawned_3 = true;
+		}
+		if (!enemySpawned_4 && playerPosition.x > 85.0f && playerPosition.x < 90.0f) {
+			// 新しい敵を生成
+			Enemy* newEnemy = new Enemy();
+			Vector3 enemySpawnPosition = {93.0f, 11.0f, 0.0f}; // スポーン位置を指定
+			newEnemy->Initialize(modelEnemy_, &viewProjection_, enemySpawnPosition, mapChipField_);
+			enemies_.push_back(newEnemy);
+			enemySpawned_4 = true;
+		}
 		// 敵の更新
 		for (Enemy* enemy : enemies_) {
 			enemy->Update();

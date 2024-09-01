@@ -26,18 +26,18 @@ public:
 	void Reset();
 	void SetMovableArea(Rect area) { movableArea_ = area; }
 
-private:
+private:  
 	// 座標補間割合
 	static inline const float kInterpolationRate = 0.8f;
 	// 速度掛け率
 	static inline const float kVelocityBias = 1.0f;
 	// 追従対象の各方向へのカメラ移動範囲
-	static inline const Rect margin = {-5.0f, 5.0f, -5.0f, 5.0f};
+	static inline const Rect margin = {-5.0f, 5.0f, 0.0f, 3.0f};
 	// ビュープロジェクション
 	ViewProjection* viewProjection_;
 	Player* target_ = nullptr;
 	// 追従対象とカメラの座標の差(オフセット)
-	Vector3 targetOffset_ = {0, 3, -12.0f};
+	Vector3 targetOffset_ = {0, 2, -15.0f};
 	// カメラ移動範囲
 	Rect movableArea_ = {0, 0, 0, 0};
 	// カメラの目標座標
