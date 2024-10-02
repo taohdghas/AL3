@@ -2,7 +2,7 @@
 #include "ViewProjection.h"
 #include "WorldTransform.h"
 #include "mymath.h"
-#include "imgui.h"
+//#include "imgui.h"
 /// <summary>
 /// レールカメラ
 /// </summary>

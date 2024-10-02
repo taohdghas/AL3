@@ -75,10 +75,12 @@ void Player::Update() {
 
 	// 行列を定数バッファに転送
 	worldTransform_.TransferMatrix();
+	/*
 	// キャラクターの座標を画面表示する処理
 	ImGui::Begin("Debug");
 	ImGui::DragFloat3("Position", &worldTransform_.translation_.x, 0.1f);
 	ImGui::End();
+	*/
 }
 
 void Player::Draw(const ViewProjection& viewProjection) {
